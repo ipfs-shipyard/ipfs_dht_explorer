@@ -1,0 +1,64 @@
+<h1>
+  <%= 'Reachable' if params[:reachable].present? %>
+  <%= link_to 'Nodes', root_path %> By Country
+</h1>
+
+<% @country_names.each do |country_name, total_count| %>
+  <% scope = @scope.where(country_name: country_name) %>
+  <hr>
+  <div class="country">
+    <h2>
+      <%= country_name %>
+    </h2>
+    <p>Total: <%= number_with_delimiter total_count %> (<%= (total_count/@count.to_f*100).round(1) %>%)</p>
+    <% reachable_count = scope.where(reachable: true).count %>
+    <% unless params[:reachable].present? %>
+      Reachable: <%= number_with_delimiter reachable_count %> (<%= (reachable_count/total_count.to_f*100).round(1) %>%)
+    <% end %>
+
+    <table>
+      <tr>
+        <td>
+          <h4>Versions (only reachable nodes)</h4>
+          <ul>
+            <% scope.group(:minor_go_ipfs_version).count.sort_by{|k,v| -v}.first(8).each do |minor_go_ipfs_version, count| %>
+              <% next if minor_go_ipfs_version.blank? %>
+              <li>
+                <%= link_to "0.#{minor_go_ipfs_version}.X", nodes_path(minor_go_ipfs_version: minor_go_ipfs_version) %>
+                <small>
+                  <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/reachable_count.to_f*100).round(1) %>%)</span>
+                </small>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+        <td>
+          <h4>Networks</h4>
+          <ul>
+            <% scope.group(:autonomous_system_organization).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(8).each do |asn, count| %>
+              <li>
+                <%= link_to asn || 'Unknown', nodes_path(asn: asn) %>
+                <small>
+                  <%= count %> (<%= (count/total_count.to_f*100).round(1) %>%)
+                </small>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+        <td>
+          <h4>Cities</h4>
+          <ul>
+            <% scope.group(:city_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(8).each do |city_name, count| %>
+              <li>
+                <%= link_to city_name || 'Unknown', nodes_path(city_name: city_name) %>
+                <small>
+                  <%= count %> (<%= (count/total_count.to_f*100).round(1) %>%)
+                </small>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% end %>

@@ -1,0 +1,9 @@
+<li class='node'>
+  <%= link_to node.node_id, node %>
+  <!--- (<%= node.peers_count %>) --->
+  <% if node.agent_version.present? %>
+    <small>
+      - <%= node.agent_version %>
+    </small>
+  <% end %>
+</li>

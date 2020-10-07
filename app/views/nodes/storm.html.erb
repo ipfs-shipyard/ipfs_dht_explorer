@@ -1,0 +1,49 @@
+<h1>Storm Nodes (<%= total = @scope.count %>)</h1>
+
+<ul>
+  <%= render @nodes %>
+</ul>
+
+<%== pagy_nav(@pagy) %>
+
+<h4>Filter by ASN</h4>
+
+<ul>
+  <% @autonomous_system_organizations.sort_by{|k,v| -v}.first(30).each do |asn, count| %>
+    <% next if asn.blank? %>
+    <li class='<%= 'active' if params[:asn].present? && params[:asn] == asn %>'>
+      <%= link_to asn || 'Unknown', nodes_path(asn: asn) %>
+      <small>
+        <%= count %> (<%= (count/total.to_f*100).round(1) %>%)
+      </small>
+    </li>
+  <% end %>
+</ul>
+
+<h4>Filter by Country</h4>
+
+<ul>
+  <% @country_names.sort_by{|k,v| -v}.first(30).each do |country_name, count| %>
+    <% next if country_name.blank? %>
+    <li class='<%= 'active' if params[:country_name].present? && params[:country_name] == country_name %>'>
+      <%= link_to country_name || 'Unknown', nodes_path(country_name: country_name) %>
+      <small>
+        <%= count %> (<%= (count/total.to_f*100).round(1) %>%)
+      </small>
+    </li>
+  <% end %>
+</ul>
+
+<h4>Filter by City</h4>
+
+<ul>
+  <% @city_names.sort_by{|k,v| -v}.first(30).each do |city_name, count| %>
+    <% next if city_name.blank? %>
+    <li class='<%= 'active' if params[:city_name].present? && params[:city_name] == city_name %>'>
+      <%= link_to city_name || 'Unknown', nodes_path(city_name: city_name) %>
+      <small>
+        <%= count %> (<%= (count/total.to_f*100).round(1) %>%)
+      </small>
+    </li>
+  <% end %>
+</ul>

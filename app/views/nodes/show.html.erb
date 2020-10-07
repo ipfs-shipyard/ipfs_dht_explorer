@@ -1,0 +1,48 @@
+<h1>
+  <%= link_to 'Nodes', root_path %>/<%= @node.node_id %>
+</h1>
+
+<% if @node.agent_version.present? %>
+  <p>
+    <%= @node.agent_version %>
+  </p>
+<% end %>
+
+<h4>IPs</h4>
+<ul>
+  <% @node.ip4_addresses.each do |addr| %>
+    <li>
+      <%= link_to addr, nodes_path(ip4: addr) %>
+    </li>
+  <% end %>
+</ul>
+
+
+<h4>MultiAddrs</h4>
+<ul>
+  <% @node.multiaddrs.each do |addr| %>
+    <li>
+      <%= link_to addr, nodes_path(addr: addr) %>
+    </li>
+  <% end %>
+</ul>
+
+<h4>Protocols</h4>
+<ul>
+  <% @node.protocols.each do |protocol| %>
+    <li>
+      <%= link_to protocol, nodes_path(protocols: protocol) %>
+    </li>
+  <% end %>
+</ul>
+
+
+<h4>Source Peers (<%= @node.source_peers.count %>)</h4>
+<ul>
+  <%= render @node.source_peers.order('peers_count DESC') %>
+</ul>
+
+<h4>Target Peers (<%= @node.target_peers.count %>)</h4>
+<ul>
+  <%= render @node.target_peers.order('peers_count DESC') %>
+</ul>
