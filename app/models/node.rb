@@ -97,14 +97,14 @@ class Node < ApplicationRecord
   end
 
   def self.import_from_other_crawler
-    file = File.open("/Users/andrewnesbitt/code/libp2p-dht-scrape-client/myjsonfile.json")
+    file = File.open("/Users/andrewnesbitt/code/libp2p-dht-scrape-client/output.json")
     data = JSON.load(file)
     data.each do |peer_id, node|
       n = Node.find_or_create_by(node_id: node['peerID'])
 
       updates = {}
-      updates[:multiaddrs] = (node['addresses'] + n.multiaddrs).uniq
-      updates[:protocols] = (node['protocols'] + n.protocols).uniq
+      updates[:multiaddrs] = (Array(node['addresses']) + Array(n.multiaddrs)).uniq
+      updates[:protocols] = (Array(node['protocols']) + Array(n.protocols)).uniq
       updates[:reachable] = node['agentVersion'].present?
       updates[:agent_version] = node['agentVersion'] if node['agentVersion'].present?
 
@@ -123,7 +123,7 @@ class Node < ApplicationRecord
 
   def self.import_and_update
     import_from_other_crawler
-    update_peers_counts
+    # update_peers_counts
     update_location_details
     update_minor_go_ipfs_version
   end

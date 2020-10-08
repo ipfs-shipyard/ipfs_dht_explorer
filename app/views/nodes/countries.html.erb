@@ -1,6 +1,6 @@
 <h1>
   <%= 'Reachable' if params[:reachable].present? %>
-  <%= link_to 'Nodes', root_path %> By Country
+  <%= link_to 'Nodes', root_path %> By Country (<%= @scope.count %>)
 </h1>
 
 <% @country_names.each do |country_name, total_count| %>
@@ -19,7 +19,12 @@
     <table>
       <tr>
         <td>
-          <h4>Versions (only reachable nodes)</h4>
+          <h4>
+            Versions
+            <% unless params[:reachable].present? %>
+              (only reachable nodes)
+            <% end %>
+          </h4>
           <ul>
             <% scope.group(:minor_go_ipfs_version).count.sort_by{|k,v| -v}.first(8).each do |minor_go_ipfs_version, count| %>
               <% next if minor_go_ipfs_version.blank? %>
