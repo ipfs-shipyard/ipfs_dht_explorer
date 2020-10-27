@@ -2,9 +2,13 @@
   <%= link_to 'Nodes', root_path %>/<%= @node.node_id %>
 </h1>
 
+<p>
+  Last seen: <%= distance_of_time_in_words_to_now @node.updated_at %> ago
+</p>
+
 <% if @node.agent_version.present? %>
   <p>
-    <%= @node.agent_version %>
+    Agent Version: <%= @node.agent_version %>
   </p>
 <% end %>
 
@@ -16,6 +20,13 @@
     </li>
   <% end %>
 </ul>
+
+<h4>Location</h4>
+
+<% [:country_name, :city_name, :most_specific_subdivision_name, :autonomous_system_organization, :network, :latitude, :longitude].each do |field| %>
+  <% next if @node.send(field).blank? %>
+  <%= field.to_s.humanize %>: <strong><%= @node.send(field) %></strong> <br>
+<% end %>
 
 
 <h4>MultiAddrs</h4>

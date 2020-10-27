@@ -1,6 +1,6 @@
 <li class='node'>
   <%= link_to node.node_id, node %>
-  <%= distance_of_time_in_words_to_now node.updated_at %>
+  <%= distance_of_time_in_words_to_now node.updated_at %> ago
   <% if node.agent_version.present? %>
     <small>
       (<%= node.agent_version %>)
