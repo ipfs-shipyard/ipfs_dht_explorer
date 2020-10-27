@@ -1,9 +1,9 @@
 <li class='node'>
   <%= link_to node.node_id, node %>
-  <!--- (<%= node.peers_count %>) --->
+  <%= distance_of_time_in_words_to_now node.updated_at %>
   <% if node.agent_version.present? %>
     <small>
-      - <%= node.agent_version %>
+      (<%= node.agent_version %>)
     </small>
   <% end %>
 </li>

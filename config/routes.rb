@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     collection do
       get :countries
       get :storm
+      post :report
     end
   end
   root to: 'nodes#index'

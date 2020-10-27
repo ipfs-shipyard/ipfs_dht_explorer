@@ -1,10 +1,27 @@
 class NodesController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :report
+
   def index
     @scope = Node.without_boosters.without_storm
 
     apply_filters
 
-    @pagy, @nodes = pagy(@scope.order('peers_count DESC'))
+    @pagy, @nodes = pagy(@scope.order('peers_count DESC'), items: 100)
+  end
+
+  def report
+    n = Node.find_or_create_by(node_id: params['peerID'])
+
+    updates = {}
+    updates[:multiaddrs] = (Array(params['addresses']) + Array(n.multiaddrs)).uniq
+    updates[:protocols] = (Array(params['protocols']) + Array(n.protocols)).uniq
+    updates[:reachable] = params['agentVersion'].present?
+    updates[:agent_version] = params['agentVersion'] if params['agentVersion'].present?
+    updates[:updated_at] = Time.now
+    updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
+    n.update(updates)
+    n.update_location_details
+    head :ok
   end
 
   def show

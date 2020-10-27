@@ -5,7 +5,7 @@ class Node < ApplicationRecord
   has_many :target_edges, class_name: 'Edge', foreign_key: :target_id
   has_many :target_peers, through: :target_edges, class_name: 'Node'
 
-  scope :without_boosters, -> { where.not(agent_version: ['hydra-booster/0.7.0', 'dhtbooster/2']) }
+  scope :without_boosters, -> { where.not(agent_version: ['hydra-booster/0.7.0', 'hydra-booster/0.7.3', 'dhtbooster/2']) }
   scope :without_storm, -> { where.not(agent_version: ['storm']) }
 
   GEO_CITY_READER = MaxMind::GeoIP2::Reader.new('/usr/local/var/GeoIP/GeoLite2-City.mmdb')
@@ -71,11 +71,15 @@ class Node < ApplicationRecord
     multiaddrs.select{|a| a.split('/')[1] == 'ip6' }.map{|a| IPAddr.new(a.split('/')[2]) }.uniq.select{|a| !a.loopback? && !a.private? && !a.link_local?  }
   end
 
-  def update_minor_go_ipfs_version
+  def minor_go_ipfs_version
     return unless agent_version.present?
     return unless agent_version.include?('go-ipfs')
-    version = agent_version.split('/')[agent_version.split('/').index('go-ipfs')+1]
-    update(minor_go_ipfs_version: version.split('.')[1])
+    agent_version.split('/')[agent_version.split('/').index('go-ipfs')+1].split('.')[1]
+  end
+
+  def update_minor_go_ipfs_version
+    return unless minor_go_ipfs_version.present?
+    update(minor_go_ipfs_version: minor_go_ipfs_version)
   end
 
   def update_peers_count
@@ -122,9 +126,10 @@ class Node < ApplicationRecord
   end
 
   def self.import_and_update
-    import_from_other_crawler
-    # update_peers_counts
-    update_location_details
-    update_minor_go_ipfs_version
+    Node.import_from_other_crawler
+    Node.import_from_crawler
+    Node.update_peers_counts
+    Node.update_location_details
+    Node.update_minor_go_ipfs_version
   end
 end

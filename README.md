@@ -1,24 +1,11 @@
-# README
+# IPFS DHT Explorer
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Related projects
+- mindmax GeoLite2
+- https://github.com/andrew/libp2p-dht-scrape-aas
+- https://github.com/andrew/libp2p-dht-scrape-client
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Alternative scrapers
+- https://github.com/wiberlin/ipfs-crawler
+- https://github.com/whyrusleeping/ipfs-counter
+- https://github.com/ipfs-shipyard/ipfs-counter
