@@ -2,7 +2,7 @@ class NodesController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :report
 
   def index
-    @scope = Node.without_boosters.without_storm
+    @scope = Node.all
 
     apply_filters
 
@@ -29,7 +29,7 @@ class NodesController < ApplicationController
   end
 
   def countries
-    @scope = Node.without_boosters.without_storm
+    @scope = Node.all
     @scope = @scope.where(reachable: params[:reachable]) if params[:reachable].present?
     @count = @scope.count
     @country_names = @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(15)
@@ -54,7 +54,7 @@ class NodesController < ApplicationController
 
     @protocols = @scope.unscope(where: :protocols).pluck(:protocols).flatten.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }
     @reachables = @scope.unscope(where: :reachable).group(:reachable).count
-    @agent_versions = @scope.unscope(where: :agent_version).without_boosters.without_storm.group(:agent_version).count
+    @agent_versions = @scope.unscope(where: :agent_version).group(:agent_version).count
     @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
     @country_names = @scope.unscope(where: :country_name).group(:country_name).count
     @city_names = @scope.unscope(where: :city_name).group(:city_name).count
