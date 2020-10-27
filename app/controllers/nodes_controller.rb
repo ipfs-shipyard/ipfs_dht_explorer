@@ -6,7 +6,7 @@ class NodesController < ApplicationController
 
     apply_filters
 
-    @pagy, @nodes = pagy(@scope.order('peers_count DESC'), items: 100)
+    @pagy, @nodes = pagy(@scope.order('updated_at DESC'), items: 100)
   end
 
   def report
