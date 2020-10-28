@@ -12,26 +12,22 @@
     </h2>
     <p>Total: <%= number_with_delimiter total_count %> (<%= (total_count/@count.to_f*100).round(1) %>%)</p>
     <% reachable_count = scope.where(reachable: true).count %>
-    <% unless params[:reachable].present? %>
-      Reachable: <%= number_with_delimiter reachable_count %> (<%= (reachable_count/total_count.to_f*100).round(1) %>%)
-    <% end %>
+    Reachable: <%= number_with_delimiter reachable_count %> (<%= (reachable_count/total_count.to_f*100).round(1) %>%)
 
     <table>
       <tr>
         <td>
           <h4>
             Versions
-            <% unless params[:reachable].present? %>
-              (only reachable nodes)
-            <% end %>
           </h4>
           <ul>
-            <% scope.group(:minor_go_ipfs_version).count.sort_by{|k,v| -v}.first(8).each do |minor_go_ipfs_version, count| %>
-              <% next if minor_go_ipfs_version.blank? %>
+            <% minor_go_ipfs_version_counts = scope.group(:minor_go_ipfs_version).count.select{|k,v| k.present?}.sort_by{|k,v| k} %>
+            <% minor_go_ipfs_version_counts_total = minor_go_ipfs_version_counts.sum(&:last) %>
+            <% minor_go_ipfs_version_counts.first(8).each do |minor_go_ipfs_version, count| %>
               <li>
                 <%= link_to "0.#{minor_go_ipfs_version}.X", nodes_path(minor_go_ipfs_version: minor_go_ipfs_version) %>
                 <small>
-                  <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/reachable_count.to_f*100).round(1) %>%)</span>
+                  <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/minor_go_ipfs_version_counts_total.to_f*100).round(1) %>%)</span>
                 </small>
               </li>
             <% end %>

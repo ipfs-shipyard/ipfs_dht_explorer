@@ -6,7 +6,10 @@ class NodesController < ApplicationController
 
     apply_filters
 
-    @pagy, @nodes = pagy(@scope.order('reachable DESC, updated_at DESC'), items: 100)
+    sort = params[:sort] || 'nodes.updated_at'
+    order = params[:order] || 'desc'
+
+    @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
   def report

@@ -1,0 +1,33 @@
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle <%= 'active' if (params[filter_name].present? || params["exclude_#{filter_name}"].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><%= filter_label %></a>
+  <div class="dropdown-menu">
+    <% if params[filter_name].present? %>
+      <% Array(params[filter_name]).each do |selection| %>
+        <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge({:page => nil, filter_name => Array(params[filter_name].dup) - [selection]})) %>">
+          <%= selection %>
+        </a>
+      <% end %>
+    <% end %>
+    <% if params["exclude_#{filter_name}"].present? %>
+      <% Array(params["exclude_#{filter_name}"]).each do |exclude_selection| %>
+        <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge({:page => nil, "exclude_#{filter_name}" => Array(params["exclude_#{filter_name}"].dup) - [exclude_selection]})) %>">
+          Excluding: <%= exclude_selection %>
+        </a>
+      <% end %>
+    <% end %>
+    <% filter_collection.sort_by(&:last).reverse.reject{|r| r[0].to_s.blank? || r[1].zero? }.each do |option,count| %>
+      <% unless Array(params[filter_name]).include?(option) || Array(params["exclude_#{filter_name}"]).include?(option) %>
+        <a class="dropdown-item"
+           data-alt="<%= url_for(request.params.merge({:page => nil, "exclude_#{filter_name}" => Array(params["exclude_#{filter_name}"].dup) << option})) %>"
+           data-add="<%= url_for(request.params.merge({:page => nil, filter_name => Array(params[filter_name].dup) << option})) %>"
+           href="<%= url_for(request.params.merge({:page => nil, filter_name => option})) %>"
+          title="cmd+click to exclude <%= option %>&#013;alt/option+click to include <%= option %>">
+          <%= option %>
+          <small class='text-muted'>
+            <%= number_with_delimiter count %>
+          </small>
+        </a>
+      <% end %>
+    <% end %>
+  </div>
+</li>

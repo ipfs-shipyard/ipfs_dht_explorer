@@ -1,99 +1,29 @@
-<h1>Nodes (<%= @scope.count %>) <small> <%= link_to 'Break down by country', countries_nodes_path %></small></h1>
+<nav class="mb-2 mt-2 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Nodes' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+  </span>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'agent_version', filter_label: 'Agent Version', filter_collection: @agent_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'minor_go_ipfs_version', filter_label: 'Go IPFS version', filter_collection: @minor_go_ipfs_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'reachable', filter_label: 'Reachable', filter_collection: @reachables} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Network', filter_collection: @autonomous_system_organizations} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'city_name', filter_label: 'City', filter_collection: @city_names} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'protocol', filter_label: 'Protocol', filter_collection: @protocols} %>
+      <%#= render 'range_filter' %>
+    </ul>
+    <ul class="nav nav-pills ml-auto">
+      <%= render 'sort_filter' %>
+    </ul>
+  </div>
+</nav>
+
 
 <ul>
   <%= render @nodes %>
 </ul>
 
-<%== pagy_nav(@pagy) %>
-
-<h4>Filter by agent version</h4>
-<ul>
-  <% @agent_versions.sort_by{|k,v| -v}.first(30).each do |agent_version, count| %>
-    <% next if agent_version.blank? %>
-    <li class='<%= 'active' if params[:agent_version] == agent_version %>'>
-      <%= link_to agent_version, nodes_path(agent_version: agent_version) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
-
-<h4>Filter by ipfs version</h4>
-<ul>
-  <% @minor_go_ipfs_versions.sort_by{|k,v| -v}.first(30).each do |minor_go_ipfs_version, count| %>
-    <% next if minor_go_ipfs_version.blank? %>
-    <li class='<%= 'active' if params[:minor_go_ipfs_version] == minor_go_ipfs_version %>'>
-      <%= link_to "0.#{minor_go_ipfs_version}.X", nodes_path(minor_go_ipfs_version: minor_go_ipfs_version) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
-
-<h4>Filter by reachable</h4>
-<ul>
-  <% @reachables.sort_by{|k,v| -v}.each do |reachable, count| %>
-    <li class='<%= 'active' if params[:reachable] == reachable %>'>
-      <%= link_to reachable.to_s, nodes_path(reachable: reachable) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
-
-<h4>Filter by protocol</h4>
-
-<ul>
-  <% @protocols.sort_by{|k,v| -v}.first(30).each do |protocol, count| %>
-    <li class='<%= 'active' if params[:protocols] == protocol %>'>
-      <%= link_to protocol.to_s, nodes_path(protocols: protocol) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
-
-<h4>Filter by ASN</h4>
-
-<ul>
-  <% @autonomous_system_organizations.sort_by{|k,v| -v}.first(30).each do |asn, count| %>
-    <li class='<%= 'active' if params[:asn].present? && params[:asn] == asn %>'>
-      <%= link_to asn || 'Unknown', nodes_path(asn: asn) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
-
-<h4>Filter by Country</h4>
-
-<ul>
-  <% @country_names.sort_by{|k,v| -v}.first(30).each do |country_name, count| %>
-    <% next if country_name.blank? %>
-    <li class='<%= 'active' if params[:country_name].present? && params[:country_name] == country_name %>'>
-      <%= link_to country_name || 'Unknown', nodes_path(country_name: country_name) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
-
-<h4>Filter by City</h4>
-
-<ul>
-  <% @city_names.sort_by{|k,v| -v}.first(30).each do |city_name, count| %>
-    <% next if city_name.blank? %>
-    <li class='<%= 'active' if params[:city_name].present? && params[:city_name] == city_name %>'>
-      <%= link_to city_name || 'Unknown', nodes_path(city_name: city_name) %>
-      <small>
-        (<%= count %>)
-      </small>
-    </li>
-  <% end %>
-</ul>
+<%== pagy_bootstrap_nav(@pagy) %>

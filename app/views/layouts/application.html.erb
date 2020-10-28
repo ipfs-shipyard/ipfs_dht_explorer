@@ -1,15 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html class='h-100'>
   <head>
-    <title>IpfsDhtExplorer</title>
+    <title>
+      <%= page_title %>
+    </title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
+    <%= content_for :rss %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class='d-flex flex-column h-100'>
+    <header>
+      <nav class="navbar navbar-dark bg-dark navbar-fixed-top navbar-expand-md">
+        <a class="navbar-brand" href="/">
+          <img src="https://github.com/ipfs.png" width="30" height="30" alt="">
+        </a>
+        <a class="navbar-brand" href="/">
+          IPFS DHT Explorer
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href='<%= countries_nodes_path %>'>
+                Countries
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href='<%= storm_nodes_path %>'>
+                Storm
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main role="main" class="flex-shrink-0">
+      <div class="container">
+        <% flash.each do |key, value| %>
+          <div class="<%= bootstrap_class_for(key) %>">
+            <%= value %>
+          </div>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </main>
+    <footer class='footer mt-auto py-3'>
+
+      <div class="container">
+        <span class="text-muted">
+          <%= link_to 'Feature requests and bug reports welcome', 'https://github.com/andrew/ipfs_dht_explorer', target: :_blank %>
+        </span>
+      </div>
+    </footer>
   </body>
 </html>
