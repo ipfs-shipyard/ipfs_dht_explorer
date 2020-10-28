@@ -1,9 +1,13 @@
-<li class='node'>
-  <%= link_to node.node_id, node %>
-  <%= distance_of_time_in_words_to_now node.updated_at %> ago
-  <% if node.agent_version.present? %>
-    <small>
-      (<%= node.agent_version %>)
-    </small>
-  <% end %>
-</li>
+<div class='node mb-2'>
+  <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
+  <span class='cid'><%= link_to node.node_id, node %></span><br>
+  <small class='text-muted'>
+    <% if node.main_ip.present? %>
+      <%= node.main_ip %> -
+    <% end %>
+    <% if node.agent_version.present? %>
+      <%= node.agent_version %> -
+    <% end %>
+    Last seen <%= distance_of_time_in_words_to_now node.updated_at %> ago
+  </small>
+</div>

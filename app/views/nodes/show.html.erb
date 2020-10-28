@@ -22,12 +22,12 @@
 </ul>
 
 <h4>Location</h4>
-
+<p>
 <% [:country_name, :city_name, :most_specific_subdivision_name, :autonomous_system_organization, :network, :latitude, :longitude].each do |field| %>
   <% next if @node.send(field).blank? %>
   <%= field.to_s.humanize %>: <strong><%= @node.send(field) %></strong> <br>
 <% end %>
-
+</p>
 
 <h4>MultiAddrs</h4>
 <ul>

@@ -1,24 +1,63 @@
-<h1>
-  <%= 'Reachable' if params[:reachable].present? %>
-  <%= link_to 'Nodes', root_path %> By Country (<%= @scope.count %>)
-</h1>
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Nodes By Country' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+  </span>
 
-<% @country_names.each do |country_name, total_count| %>
-  <% scope = @scope.where(country_name: country_name) %>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'agent_version', filter_label: 'Agent Version', filter_collection: @agent_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'minor_go_ipfs_version', filter_label: 'Go IPFS version', filter_collection: @minor_go_ipfs_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'reachable', filter_label: 'Reachable', filter_collection: @reachables} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'network', filter_label: 'Network', filter_collection: @networks} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'city_name', filter_label: 'City', filter_collection: @city_names} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'protocol', filter_label: 'Protocol', filter_collection: @protocols} %>
+      <%#= render 'range_filter' %>
+    </ul>
+    <ul class="nav nav-pills ml-auto">
+      <%#= render 'sort_filter' %>
+    </ul>
+  </div>
+</nav>
+
+<% @country_iso_codes.each do |country_iso_code, total_count| %>
+  <% code = IsoCountryCodes.find(country_iso_code) %>
+  <% country_name = code.name %>
+  <% scope = @scope.where(country_iso_code: country_iso_code) %>
   <hr>
-  <div class="country">
+  <div class="country mb-3">
     <h2>
+      <%= flag_icon(country_iso_code) %>
       <%= country_name %>
     </h2>
-    <p>Total: <%= number_with_delimiter total_count %> (<%= (total_count/@count.to_f*100).round(1) %>%)</p>
+    <p>Total: <%= number_with_delimiter total_count %> (<%= (total_count/@count.to_f*100).round(1) %>%) <br>
     <% reachable_count = scope.where(reachable: true).count %>
     Reachable: <%= number_with_delimiter reachable_count %> (<%= (reachable_count/total_count.to_f*100).round(1) %>%)
-
+</p>
     <table>
       <tr>
         <td>
           <h4>
-            Versions
+            Agents
+          </h4>
+          <ul>
+            <% agent_version_counts = scope.group(:agent_version).count.select{|k,v| k.present?}.sort_by{|k,v| -v} %>
+            <% agent_version_counts_total = agent_version_counts.sum(&:last) %>
+            <% agent_version_counts.first(8).each do |agent_version, count| %>
+              <li>
+                <%= link_to agent_version, nodes_path(agent_version: agent_version) %>
+                <small>
+                  <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/agent_version_counts_total.to_f*100).round(1) %>%)</span>
+                </small>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+        <td>
+          <h4>
+            go-ipfs
           </h4>
           <ul>
             <% minor_go_ipfs_version_counts = scope.group(:minor_go_ipfs_version).count.select{|k,v| k.present?}.sort_by{|k,v| k} %>
@@ -38,7 +77,7 @@
           <ul>
             <% scope.group(:autonomous_system_organization).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(8).each do |asn, count| %>
               <li>
-                <%= link_to asn || 'Unknown', nodes_path(asn: asn) %>
+                <%= link_to asn.truncate(30) || 'Unknown', nodes_path(asn: asn) %>
                 <small>
                   <%= count %> (<%= (count/total_count.to_f*100).round(1) %>%)
                 </small>

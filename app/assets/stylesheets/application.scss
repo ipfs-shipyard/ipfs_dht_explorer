@@ -1,4 +1,5 @@
 @import "bootstrap";
+@import "flag-icon";
 
 main > .container {
   padding: 10px 15px 0;
@@ -131,6 +132,10 @@ main > .container {
 }
 li.active{
   font-weight: bold;
+}
+
+.cid{
+  font-family: monospace;
 }
 
 table td{

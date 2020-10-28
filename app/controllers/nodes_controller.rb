@@ -33,9 +33,9 @@ class NodesController < ApplicationController
 
   def countries
     @scope = Node.all
-    @scope = @scope.where(reachable: params[:reachable]) if params[:reachable].present?
+    apply_filters
     @count = @scope.count
-    @country_names = @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(15)
+    @country_iso_codes = @scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(10)
   end
 
   def storm
@@ -53,10 +53,15 @@ class NodesController < ApplicationController
     @scope = @scope.where(agent_version: params[:agent_version]) if params[:agent_version].present?
     @scope = @scope.where(reachable: params[:reachable]) if params[:reachable].present?
     @scope = @scope.where(city_name: params[:city_name]) if params[:city_name].present?
+    @scope = @scope.where(network: params[:network]) if params[:network].present?
     @scope = @scope.where(minor_go_ipfs_version: params[:minor_go_ipfs_version]) if params[:minor_go_ipfs_version].present?
+
+    @scope = @scope.where.not(agent_version: params[:exclude_agent_version]) if params[:exclude_agent_version].present?
+
 
     @protocols = @scope.unscope(where: :protocols).pluck(:protocols).flatten.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }
     @reachables = @scope.unscope(where: :reachable).group(:reachable).count
+    @networks = @scope.unscope(where: :network).group(:network).count
     @agent_versions = @scope.unscope(where: :agent_version).group(:agent_version).count
     @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
     @country_names = @scope.unscope(where: :country_name).group(:country_name).count
