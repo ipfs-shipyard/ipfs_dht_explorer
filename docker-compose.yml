@@ -27,9 +27,26 @@ services:
     environment:
       - POSTGRES_PASSWORD=development
 
+  geoipupdate:
+    container_name: geoipupdate
+    image: maxmindinc/geoipupdate
+    restart: unless-stopped
+    environment:
+      - GEOIPUPDATE_ACCOUNT_ID=416437
+      - GEOIPUPDATE_LICENSE_KEY=Iezh99N2ZFDt1jCI
+      - 'GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country'
+      - GEOIPUPDATE_FREQUENCY=168
+    networks:
+      - geoipupdate
+    volumes:
+      - 'geoipupdate_data:/usr/share/GeoIP'
+
 volumes:
   pg_data:
+  geoipupdate_data:
+    driver: local
 
 networks:
+  geoipupdate:
   internal:
     driver: bridge
