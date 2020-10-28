@@ -6,5 +6,5 @@ Rails.application.routes.draw do
       post :report
     end
   end
-  root to: 'nodes#index'
+  root to: 'nodes#overview'
 end

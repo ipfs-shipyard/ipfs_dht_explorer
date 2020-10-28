@@ -1,6 +1,16 @@
 class NodesController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :report
 
+  def overview
+    @scope = Node.without_boosters.without_storm
+    # versions
+    # countries
+    # networks
+    # map
+    # graph of new
+    # graph of updated
+  end
+
   def index
     @scope = Node.all
 
@@ -22,6 +32,7 @@ class NodesController < ApplicationController
     updates[:agent_version] = params['agentVersion'] if params['agentVersion'].present?
     updates[:updated_at] = Time.now
     updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
+    updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
     n.update(updates)
     n.update_location_details
     head :ok
@@ -55,6 +66,7 @@ class NodesController < ApplicationController
     @scope = @scope.where(city_name: params[:city_name]) if params[:city_name].present?
     @scope = @scope.where(network: params[:network]) if params[:network].present?
     @scope = @scope.where(minor_go_ipfs_version: params[:minor_go_ipfs_version]) if params[:minor_go_ipfs_version].present?
+    @scope = @scope.where(patch_go_ipfs_version: params[:patch_go_ipfs_version]) if params[:patch_go_ipfs_version].present?
 
     @scope = @scope.where.not(agent_version: params[:exclude_agent_version]) if params[:exclude_agent_version].present?
 
@@ -65,7 +77,7 @@ class NodesController < ApplicationController
     @agent_versions = @scope.unscope(where: :agent_version).group(:agent_version).count
     @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
     @country_names = @scope.unscope(where: :country_name).group(:country_name).count
-    @city_names = @scope.unscope(where: :city_name).group(:city_name).count
     @minor_go_ipfs_versions = @scope.unscope(where: :minor_go_ipfs_version).group(:minor_go_ipfs_version).count
+    @patch_go_ipfs_versions = @scope.unscope(where: :patch_go_ipfs_version).group(:patch_go_ipfs_version).count
   end
 end

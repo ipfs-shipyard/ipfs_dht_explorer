@@ -82,6 +82,17 @@ class Node < ApplicationRecord
     update(minor_go_ipfs_version: minor_go_ipfs_version)
   end
 
+  def patch_go_ipfs_version
+    return unless agent_version.present?
+    return unless agent_version.include?('go-ipfs')
+    agent_version.split('/')[agent_version.split('/').index('go-ipfs')+1]
+  end
+
+  def update_patch_go_ipfs_version
+    return unless patch_go_ipfs_version.present?
+    update(patch_go_ipfs_version: patch_go_ipfs_version)
+  end
+
   def update_peers_count
     update(peers_count: peers.count)
   end

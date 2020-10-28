@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_07_125206) do
+ActiveRecord::Schema.define(version: 2020_10_28_140722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2020_10_07_125206) do
     t.integer "autonomous_system_number"
     t.string "autonomous_system_organization"
     t.string "minor_go_ipfs_version"
+    t.string "patch_go_ipfs_version"
   end
 
 end

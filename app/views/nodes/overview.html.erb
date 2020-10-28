@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-md-4">
+    <h2>Popular Countries</h2>
+    <%= pie_chart @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(20), legend: false  %>
+  </div>
+  <div class="col-md-4">
+    <h2>Recently Discovered</h2>
+    <%= pie_chart @scope.group_by_day(:created_at).count, legend: false  %>
+  </div>
+  <div class="col-md-4">
+    <h2>Recently Seen</h2>
+    <%= pie_chart @scope.group_by_day(:updated_at).count, legend: false  %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <h2>Reachability</h2>
+    <%= pie_chart @scope.group(:reachable).count, legend: false  %>
+  </div>
+  <div class="col-md-4">
+    <h2>Popular Minor Versions</h2>
+    <%= pie_chart @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.map{|k,v| ["0.#{k}.X", v]}.first(20), legend: false  %>
+  </div>
+  <div class="col-md-4">
+    <h2>Popular Patch Versions</h2>
+    <%= pie_chart @scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(20), legend: false  %>
+  </div>
+</div>
+<p>
+  <small class='text-muted'>Ignoring storm and booster nodes</small>
+</p>
