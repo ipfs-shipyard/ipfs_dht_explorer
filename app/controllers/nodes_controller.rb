@@ -28,7 +28,7 @@ class NodesController < ApplicationController
     updates = {}
     updates[:multiaddrs] = (Array(params['addresses']) + Array(n.multiaddrs)).uniq
     updates[:protocols] = (Array(params['protocols']) + Array(n.protocols)).uniq
-    updates[:reachable] = params['agentVersion'].present?
+    updates[:reachable] = params['agentVersion'].present? || n.agent_version.present?
     updates[:agent_version] = params['agentVersion'] if params['agentVersion'].present?
     updates[:updated_at] = Time.now
     updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
@@ -49,6 +49,13 @@ class NodesController < ApplicationController
     @country_iso_codes = @scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(10)
   end
 
+  def versions
+    @scope = Node.where.not(minor_go_ipfs_version: nil)
+    apply_filters
+    @count = @scope.count
+    @minor_go_ipfs_versions = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| k}
+  end
+
   def storm
     @scope = Node.where(agent_version: 'storm')
     apply_filters
@@ -59,6 +66,7 @@ class NodesController < ApplicationController
     @scope = @scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
     @scope = @scope.where("array_to_string(multiaddrs, '||') ILIKE :ip", ip: "%#{params[:ip4]}%") if params[:ip4].present?
     @scope = @scope.where(":protocols = ANY (protocols)", protocols: params[:protocols]) if params[:protocols].present?
+
     @scope = @scope.where(autonomous_system_organization: params[:asn]) if params[:asn].present?
     @scope = @scope.where(country_name: params[:country_name]) if params[:country_name].present?
     @scope = @scope.where(agent_version: params[:agent_version]) if params[:agent_version].present?

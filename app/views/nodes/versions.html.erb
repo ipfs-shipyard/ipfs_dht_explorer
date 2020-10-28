@@ -1,13 +1,12 @@
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
-    <strong><%= @page_title = 'Nodes By Country' %></strong>
+    <strong><%= @page_title = 'Nodes By Version' %></strong>
     <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
   </span>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="nav nav-pills mr-auto">
       <%= render partial: 'excludable_filter', locals: {filter_name: 'agent_version', filter_label: 'Agent Version', filter_collection: @agent_versions} %>
-      <%= render partial: 'excludable_filter', locals: {filter_name: 'minor_go_ipfs_version', filter_label: 'Minor version', filter_collection: @minor_go_ipfs_versions} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'patch_go_ipfs_version', filter_label: 'Patch version', filter_collection: @patch_go_ipfs_versions} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'reachable', filter_label: 'Reachable', filter_collection: @reachables} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
@@ -21,15 +20,12 @@
   </div>
 </nav>
 
-<% @country_iso_codes.each do |country_iso_code, total_count| %>
-  <% code = IsoCountryCodes.find(country_iso_code) %>
-  <% country_name = code.name %>
-  <% scope = @scope.where(country_iso_code: country_iso_code) %>
+<% @minor_go_ipfs_versions.each do |minor_go_ipfs_version, total_count| %>
+  <% scope = @scope.where(minor_go_ipfs_version: minor_go_ipfs_version) %>
   <hr>
   <div class="country mb-3">
     <h2>
-      <%= flag_icon(country_iso_code) %>
-      <%= country_name %>
+      0.<%= minor_go_ipfs_version %>.X
       <small class='text-muted'>
         <%= number_with_delimiter total_count %> (<%= (total_count/@count.to_f*100).round(1) %>%)
       </small>
@@ -55,24 +51,6 @@
         </ul>
       </div>
       <div class="col-md-3">
-        <h4>
-          Minor versions
-        </h4>
-        <% minor_go_ipfs_version_counts = scope.group(:minor_go_ipfs_version).count.select{|k,v| k.present?}.sort_by{|k,v| -v} %>
-        <%= pie_chart minor_go_ipfs_version_counts.map{|k,v| ["0.#{k}.X", v]}, legend: false  %>
-        <ul class='list-unstyled'>
-          <% minor_go_ipfs_version_counts_total = minor_go_ipfs_version_counts.sum(&:last) %>
-          <% minor_go_ipfs_version_counts.first(8).each do |minor_go_ipfs_version, count| %>
-            <li>
-              <%= link_to "0.#{minor_go_ipfs_version}.X", nodes_path(minor_go_ipfs_version: minor_go_ipfs_version) %>
-              <small>
-                <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/minor_go_ipfs_version_counts_total.to_f*100).round(1) %>%)</span>
-              </small>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-      <div class="col-md-3">
         <% patch_scope = scope.group(:patch_go_ipfs_version).count.select{|k,v| k.present?}.sort_by{|k,v| -v} %>
         <h4>
           Patch versions
@@ -90,7 +68,26 @@
             </li>
           <% end %>
         </ul>
+      </div>
+      <div class="col-md-3">
+        <% country_scope = scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
+        <h4>Countries</h4>
 
+        <%= pie_chart country_scope, legend: false  %>
+
+        <ul class='list-unstyled'>
+          <% country_scope.first(8).each do |country_iso_code, count| %>
+            <% code = IsoCountryCodes.find(country_iso_code) %>
+            <% country_name = code.name %>
+            <li>
+              <%= flag_icon(country_iso_code, squared: true) %>
+              <%= link_to country_name, nodes_path(country_iso_code: country_iso_code) %>
+              <small>
+                <%= (count/total_count.to_f*100).round(1) %>%
+              </small>
+            </li>
+          <% end %>
+        </ul>
       </div>
       <div class="col-md-3">
         <% network_scope = scope.group(:autonomous_system_organization).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
