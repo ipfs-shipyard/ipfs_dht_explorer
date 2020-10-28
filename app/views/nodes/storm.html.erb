@@ -10,7 +10,6 @@
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'network', filter_label: 'Network', filter_collection: @networks} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
-      <%= render partial: 'excludable_filter', locals: {filter_name: 'protocol', filter_label: 'Protocol', filter_collection: @protocols} %>
       <%#= render 'range_filter' %>
     </ul>
     <ul class="nav nav-pills ml-auto">

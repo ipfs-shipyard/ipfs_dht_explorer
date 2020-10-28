@@ -68,7 +68,14 @@ class NodesController < ApplicationController
     @scope = @scope.where(minor_go_ipfs_version: params[:minor_go_ipfs_version]) if params[:minor_go_ipfs_version].present?
     @scope = @scope.where(patch_go_ipfs_version: params[:patch_go_ipfs_version]) if params[:patch_go_ipfs_version].present?
 
+    @scope = @scope.where.not(autonomous_system_organization: params[:exclude_asn]) if params[:exclude_asn].present?
+    @scope = @scope.where.not(country_name: params[:exclude_country_name]) if params[:exclude_country_name].present?
     @scope = @scope.where.not(agent_version: params[:exclude_agent_version]) if params[:exclude_agent_version].present?
+    @scope = @scope.where.not(reachable: params[:exclude_reachable]) if params[:exclude_reachable].present?
+    @scope = @scope.where.not(city_name: params[:exclude_city_name]) if params[:exclude_city_name].present?
+    @scope = @scope.where.not(network: params[:exclude_network]) if params[:exclude_network].present?
+    @scope = @scope.where.not(minor_go_ipfs_version: params[:exclude_minor_go_ipfs_version]) if params[:exclude_minor_go_ipfs_version].present?
+    @scope = @scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
 
 
     @protocols = @scope.unscope(where: :protocols).pluck(:protocols).flatten.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }
