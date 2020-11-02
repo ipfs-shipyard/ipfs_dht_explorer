@@ -8,8 +8,11 @@ class Node < ApplicationRecord
   scope :without_boosters, -> { where.not(agent_version: ['hydra-booster/0.7.0', 'hydra-booster/0.7.3', 'dhtbooster/2']) }
   scope :without_storm, -> { where.not(agent_version: ['storm']) }
 
-  GEO_CITY_READER = MaxMind::GeoIP2::Reader.new('/usr/local/var/GeoIP/GeoLite2-City.mmdb')
-  GEO_ASN_READER = MaxMind::GeoIP2::Reader.new('/usr/local/var/GeoIP/GeoLite2-ASN.mmdb')
+  GEO_IP_DIR = ENV['GEO_IP_DIR'] || '/usr/local/var/GeoIP'
+
+  GEO_CITY_READER = MaxMind::GeoIP2::Reader.new("#{GEO_IP_DIR}/GeoLite2-City.mmdb")
+  GEO_ASN_READER = MaxMind::GeoIP2::Reader.new("#{GEO_IP_DIR}/GeoLite2-ASN.mmdb")
+  GEO_DOMAIN_READER = MaxMind::GeoIP2::Reader.new("#{GEO_IP_DIR}/GeoIP2-Domain.mmdb")
 
   def to_s
     node_id
@@ -28,6 +31,15 @@ class Node < ApplicationRecord
     return nil unless main_ip
     @asn_details ||= begin
       GEO_ASN_READER.asn(main_ip.to_s)
+    rescue MaxMind::GeoIP2::AddressNotFoundError
+      nil
+    end
+  end
+
+  def domain_details
+    return nil unless main_ip
+    @domain_details ||= begin
+      GEO_DOMAIN_READER.domain(main_ip.to_s)
     rescue MaxMind::GeoIP2::AddressNotFoundError
       nil
     end
@@ -61,6 +73,10 @@ class Node < ApplicationRecord
 
   def main_ip6
     ip6_addresses.first
+  end
+
+  def ip_addresses
+    ip4_addresses + ip6_addresses
   end
 
   def ip4_addresses

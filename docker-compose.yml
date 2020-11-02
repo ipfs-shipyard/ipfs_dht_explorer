@@ -14,6 +14,7 @@ services:
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=development
       - DATABASE_HOST=database.service.explorer.internal
+      - GEO_IP_DIR=/usr/share/GeoIP
     networks:
       - internal
     depends_on:
@@ -35,7 +36,7 @@ services:
     environment:
       - GEOIPUPDATE_ACCOUNT_ID=416437
       - GEOIPUPDATE_LICENSE_KEY=Iezh99N2ZFDt1jCI
-      - 'GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country'
+      - 'GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country GeoIP2-Domain'
       - GEOIPUPDATE_FREQUENCY=168
     networks:
       - geoipupdate
