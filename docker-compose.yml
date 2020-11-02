@@ -19,6 +19,8 @@ services:
       - internal
     depends_on:
       - database.service.explorer.internal
+    volumes:
+      - 'geoipupdate_data:/usr/share/GeoIP'
 
   database.service.explorer.internal:
     image: postgres:9.6-alpine
