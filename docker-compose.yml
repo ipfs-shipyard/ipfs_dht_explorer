@@ -9,7 +9,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - RAILS_ENV=development
+      - RAILS_ENV=production
       - DATABASE_NAME=postgres
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=development
@@ -38,7 +38,7 @@ services:
     environment:
       - GEOIPUPDATE_ACCOUNT_ID=416437
       - GEOIPUPDATE_LICENSE_KEY=Iezh99N2ZFDt1jCI
-      - 'GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country GeoIP2-Domain'
+      - 'GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoIP2-Domain'
       - GEOIPUPDATE_FREQUENCY=168
     networks:
       - geoipupdate
