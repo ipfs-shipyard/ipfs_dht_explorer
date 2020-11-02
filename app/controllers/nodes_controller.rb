@@ -69,6 +69,10 @@ class NodesController < ApplicationController
     @scope = @scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
     @scope = @scope.where("array_to_string(multiaddrs, '||') ILIKE :ip", ip: "%#{params[:ip4]}%") if params[:ip4].present?
     @scope = @scope.where(":protocols = ANY (protocols)", protocols: params[:protocols]) if params[:protocols].present?
+    @scope = @scope.where(":domains = ANY (domains)", domains: params[:domain_name]) if params[:domain_name].present?
+
+    @scope = @scope.without_storm if params[:without_storm].present?
+    @scope = @scope.without_boosters if params[:without_boosters].present?
 
     @scope = @scope.where(autonomous_system_organization: params[:asn]) if params[:asn].present?
     @scope = @scope.where(country_name: params[:country_name]) if params[:country_name].present?
@@ -88,7 +92,7 @@ class NodesController < ApplicationController
     @scope = @scope.where.not(minor_go_ipfs_version: params[:exclude_minor_go_ipfs_version]) if params[:exclude_minor_go_ipfs_version].present?
     @scope = @scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
 
-
+    @domains = @scope.unscope(where: :domains).pluck(:domains).flatten.compact.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}
     @reachables = @scope.unscope(where: :reachable).group(:reachable).count
     @agent_versions = @scope.unscope(where: :agent_version).group(:agent_version).count
     @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count

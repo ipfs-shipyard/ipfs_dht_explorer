@@ -37,9 +37,13 @@ class Node < ApplicationRecord
   end
 
   def domain_details
-    return nil unless main_ip
-    @domain_details ||= begin
-      GEO_DOMAIN_READER.domain(main_ip.to_s)
+    @domain_details ||= Node.domain_lookup(ip)
+  end
+
+  def self.domain_lookup(ip)
+    return unless ip
+    begin
+      GEO_DOMAIN_READER.domain(ip.to_s).try(:domain)
     rescue MaxMind::GeoIP2::AddressNotFoundError
       nil
     end
@@ -61,6 +65,14 @@ class Node < ApplicationRecord
       autonomous_system_number:       asn_details.autonomous_system_number,
       autonomous_system_organization: asn_details.autonomous_system_organization
       })
+  end
+
+  def update_domains
+    update(domains: domain_names)
+  end
+
+  def domain_names
+    ip_addresses.map{|ip| Node.domain_lookup(ip) }.compact
   end
 
   def main_ip

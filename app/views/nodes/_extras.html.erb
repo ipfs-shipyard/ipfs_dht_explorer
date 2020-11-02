@@ -1,0 +1,23 @@
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle <%= 'active' if (params[:without_boosters].present? || params[:without_storm].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Extras</a>
+  <div class="dropdown-menu">
+    <% if params[:without_boosters].present? %>
+      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, without_boosters: nil)) %>">
+        Exclude booster nodes
+      </a>
+    <% else %>
+      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, without_boosters: 'true')) %>">
+        Exclude booster nodes
+      </a>
+    <% end %>
+    <% if params[:without_storm].present? %>
+      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, without_storm: nil)) %>">
+        Exclude storm
+      </a>
+    <% else %>
+      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, without_storm: 'true')) %>">
+        Exclude storm
+      </a>
+    <% end %>
+  </div>
+</li>

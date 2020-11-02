@@ -1,5 +1,5 @@
 <h1>
-  <%= link_to 'Nodes', root_path %>/<%= @node.node_id %>
+  <small><%= @node.node_id %></small>
 </h1>
 
 <p>
@@ -17,8 +17,20 @@
   <% @node.ip4_addresses.each do |addr| %>
     <li>
       <%= link_to addr, nodes_path(ip4: addr) %>
+      <% if domain = Node.domain_lookup(addr) %>
+        (<%= domain %>)
+      <% end %>
     </li>
   <% end %>
+  <% @node.ip6_addresses.each do |addr| %>
+    <li>
+      <%= link_to addr, nodes_path(ip6: addr) %>
+      <% if domain = Node.domain_lookup(addr) %>
+        (<%= domain %>)
+      <% end %>
+    </li>
+  <% end %>
+
 </ul>
 
 <h4>Location</h4>
