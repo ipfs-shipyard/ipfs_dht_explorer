@@ -72,7 +72,7 @@ class Node < ApplicationRecord
   end
 
   def domain_names
-    ip_addresses.map{|ip| Node.domain_lookup(ip) }.compact
+    ip_addresses.map{|ip| Node.domain_lookup(ip) }.compact.uniq
   end
 
   def main_ip

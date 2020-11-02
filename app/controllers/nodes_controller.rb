@@ -24,13 +24,15 @@ class NodesController < ApplicationController
 
   def report
     n = Node.find_or_create_by(node_id: params['peerID'])
-
+    n.agent_version = params['agentVersion'] if params['agentVersion'].present?
+    n.multiaddrs = (Array(params['addresses']) + Array(n.multiaddrs)).uniq
     updates = {}
     updates[:multiaddrs] = (Array(params['addresses']) + Array(n.multiaddrs)).uniq
     updates[:protocols] = (Array(params['protocols']) + Array(n.protocols)).uniq
     updates[:reachable] = params['agentVersion'].present? || n.agent_version.present?
     updates[:agent_version] = params['agentVersion'] if params['agentVersion'].present?
     updates[:updated_at] = Time.now
+    updates[:domains] = n.domain_names
     updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
     updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
     n.update(updates)
