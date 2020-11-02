@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_28_140722) do
+ActiveRecord::Schema.define(version: 2020_11_02_151609) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "edges", force: :cascade do |t|
@@ -45,6 +46,9 @@ ActiveRecord::Schema.define(version: 2020_10_28_140722) do
     t.string "autonomous_system_organization"
     t.string "minor_go_ipfs_version"
     t.string "patch_go_ipfs_version"
+    t.index ["agent_version"], name: "index_nodes_on_agent_version"
+    t.index ["country_iso_code"], name: "index_nodes_on_country_iso_code"
+    t.index ["minor_go_ipfs_version"], name: "index_nodes_on_minor_go_ipfs_version"
   end
 
 end

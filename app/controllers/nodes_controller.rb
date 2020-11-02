@@ -16,7 +16,7 @@ class NodesController < ApplicationController
 
     apply_filters
 
-    sort = params[:sort] || 'nodes.updated_at'
+    sort = params[:sort] || 'nodes.id'
     order = params[:order] || 'desc'
 
     @pagy, @nodes = pagy(@scope.order(sort => order))
@@ -59,7 +59,10 @@ class NodesController < ApplicationController
   def storm
     @scope = Node.where(agent_version: 'storm')
     apply_filters
-    @pagy, @nodes = pagy(@scope.order('peers_count DESC'))
+    sort = params[:sort] || 'nodes.id'
+    order = params[:order] || 'desc'
+
+    @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
   def apply_filters
@@ -86,9 +89,7 @@ class NodesController < ApplicationController
     @scope = @scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
 
 
-    @protocols = @scope.unscope(where: :protocols).pluck(:protocols).flatten.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }
     @reachables = @scope.unscope(where: :reachable).group(:reachable).count
-    @networks = @scope.unscope(where: :network).group(:network).count
     @agent_versions = @scope.unscope(where: :agent_version).group(:agent_version).count
     @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
     @country_names = @scope.unscope(where: :country_name).group(:country_name).count

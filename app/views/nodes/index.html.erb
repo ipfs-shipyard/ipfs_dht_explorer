@@ -11,7 +11,6 @@
       <%= render partial: 'excludable_filter', locals: {filter_name: 'patch_go_ipfs_version', filter_label: 'Patch version', filter_collection: @patch_go_ipfs_versions} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'reachable', filter_label: 'Reachable', filter_collection: @reachables} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
-      <%= render partial: 'excludable_filter', locals: {filter_name: 'network', filter_label: 'Network', filter_collection: @networks} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
       <%#= render 'range_filter' %>
     </ul>
