@@ -1,4 +1,6 @@
 class Node < ApplicationRecord
+  validates :node_id, presence: true, uniqueness: true
+
   has_many :source_edges, class_name: 'Edge', foreign_key: :source_id
   has_many :source_peers, through: :source_edges, class_name: 'Node'
 
