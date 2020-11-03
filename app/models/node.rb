@@ -94,10 +94,12 @@ class Node < ApplicationRecord
   end
 
   def ip4_addresses
+    return [] unless multiaddrs
     multiaddrs.select{|a| a.split('/')[1] == 'ip4' }.map{|a| IPAddr.new(a.split('/')[2]) }.uniq.select{|a| !a.loopback? && !a.private? && !a.link_local?  }
   end
 
   def ip6_addresses
+    return [] unless multiaddrs
     multiaddrs.select{|a| a.split('/')[1] == 'ip6' }.map{|a| IPAddr.new(a.split('/')[2]) }.uniq.select{|a| !a.loopback? && !a.private? && !a.link_local?  }
   end
 
