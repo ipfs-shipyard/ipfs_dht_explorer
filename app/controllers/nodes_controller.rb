@@ -34,6 +34,7 @@ class NodesController < ApplicationController
           n.multiaddrs = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
           updates[:multiaddrs] = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
           updates[:domains] = n.domain_names
+          updates.merge!(n.location_details)
         end
 
         if peer_values['agentVersion'].present? && n.agent_version != peer_values['agentVersion']
@@ -44,7 +45,6 @@ class NodesController < ApplicationController
           updates[:reachable] = true
         end
         n.update(updates)
-        n.update_location_details if n.multiaddrs_changed?
       else
 
         node_attrs = {
@@ -58,6 +58,7 @@ class NodesController < ApplicationController
 
         if node.multiaddrs.any?
           node.domains = node.domain_names
+          node.assign_attributes(node.location_details)
         end
 
         if node.agent_version.present?
@@ -65,9 +66,7 @@ class NodesController < ApplicationController
           node.patch_go_ipfs_version = node.patch_go_ipfs_version
         end
 
-        if node.save
-          node.update_location_details if node.multiaddrs.any?
-        end
+        node.save
       end
     end
     puts params["peers"].keys.length

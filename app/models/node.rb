@@ -51,10 +51,10 @@ class Node < ApplicationRecord
     end
   end
 
-  def update_location_details
-    return unless geo_details.present?
-    return unless asn_details.present?
-    update({
+  def location_details
+    return {} unless geo_details.present?
+    return {} unless asn_details.present?
+    {
       country_iso_code:               geo_details.country.iso_code,
       country_name:                   geo_details.country.name,
       most_specific_subdivision_name: geo_details.most_specific_subdivision.try(:name),
@@ -66,7 +66,13 @@ class Node < ApplicationRecord
       network:                        geo_details.traits.network,
       autonomous_system_number:       asn_details.autonomous_system_number,
       autonomous_system_organization: asn_details.autonomous_system_organization
-      })
+      }
+  end
+
+  def update_location_details
+    return unless geo_details.present?
+    return unless asn_details.present?
+    update(location_details)
   end
 
   def update_domains
