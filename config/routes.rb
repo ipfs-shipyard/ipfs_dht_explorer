@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     collection do
       get :countries
       get :versions
+      get :secio
       get :storm
       post :report
     end

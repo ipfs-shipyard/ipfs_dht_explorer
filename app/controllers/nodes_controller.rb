@@ -91,6 +91,16 @@ class NodesController < ApplicationController
     @minor_go_ipfs_versions = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| k}
   end
 
+  def secio
+    @scope = Node.before_secio
+    apply_filters
+    @patch_go_ipfs_versions = @scope.group(:patch_go_ipfs_version).count
+    sort = params[:sort] || 'nodes.id'
+    order = params[:order] || 'desc'
+
+    @pagy, @nodes = pagy(@scope.order(sort => order))
+  end
+
   def storm
     @scope = Node.where(agent_version: 'storm')
     apply_filters
