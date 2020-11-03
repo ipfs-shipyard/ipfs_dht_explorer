@@ -23,20 +23,54 @@ class NodesController < ApplicationController
   end
 
   def report
-    n = Node.find_or_create_by(node_id: params['peerID'])
-    n.agent_version = params['agentVersion'] if params['agentVersion'].present?
-    n.multiaddrs = (Array(params['addresses']) + Array(n.multiaddrs)).uniq
-    updates = {}
-    updates[:multiaddrs] = (Array(params['addresses']) + Array(n.multiaddrs)).uniq
-    updates[:protocols] = (Array(params['protocols']) + Array(n.protocols)).uniq
-    updates[:reachable] = params['agentVersion'].present? || n.agent_version.present?
-    updates[:agent_version] = params['agentVersion'] if params['agentVersion'].present?
-    updates[:updated_at] = Time.now
-    updates[:domains] = n.domain_names
-    updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
-    updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
-    n.update(updates)
-    n.update_location_details
+    params["peers"].each do |peer_id, peer_values|
+      n = Node.find_by_node_id(peer_id)
+      if n
+        updates = {}
+        updates[:updated_at] = Time.now
+        updates[:protocols] = (Array(peer_values['protocols']) + Array(n.protocols)).uniq
+
+        if peer_values['addresses'].present? && Array(peer_values['addresses']) != Array(n.multiaddrs)
+          n.multiaddrs = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
+          updates[:multiaddrs] = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
+          updates[:domains] = n.domain_names
+        end
+
+        if peer_values['agentVersion'].present? && n.agent_version != peer_values['agentVersion']
+          n.agent_version = peer_values['agentVersion']
+          updates[:agent_version] = peer_values['agentVersion']
+          updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
+          updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
+          updates[:reachable] = true
+        end
+        n.update(updates)
+        n.update_location_details if n.multiaddrs_changed?
+      else
+
+        node_attrs = {
+          node_id: peer_id,
+          multiaddrs: Array(peer_values['addresses']),
+          agent_version: peer_values['agentVersion'],
+          protocols: Array(peer_values['protocols']),
+          reachable: peer_values['agentVersion'].present?
+        }
+        node = Node.new(node_attrs)
+
+        if node.multiaddrs.any?
+          node.domains = node.domain_names
+        end
+
+        if node.agent_version.present?
+          node.minor_go_ipfs_version = node.minor_go_ipfs_version
+          node.patch_go_ipfs_version = node.patch_go_ipfs_version
+        end
+
+        if node.save
+          node.update_location_details if node.multiaddrs.any?
+        end
+      end
+    end
+    puts params["peers"].keys.length
     head :ok
   end
 
