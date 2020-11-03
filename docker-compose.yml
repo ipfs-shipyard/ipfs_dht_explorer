@@ -16,7 +16,7 @@ services:
       - DATABASE_HOST=database.service.explorer.internal
       - GEO_IP_DIR=/usr/share/GeoIP
       - RAILS_SERVE_STATIC_FILES=true
-      - RAILS_MAX_THREADS=20
+      - RAILS_MAX_THREADS=5
     networks:
       - internal
     depends_on:
