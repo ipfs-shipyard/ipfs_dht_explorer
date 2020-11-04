@@ -223,8 +223,9 @@ class Node < ApplicationRecord
 
         node.save
       end
-
     end
+    puts "#{data.keys.length} peers imported"
+    return nil
   end
 
   def self.update_location_details
