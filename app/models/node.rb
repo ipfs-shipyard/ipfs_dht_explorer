@@ -168,6 +168,65 @@ class Node < ApplicationRecord
     return true
   end
 
+  def self.import_from_counter
+    file = File.open("data/output.json")
+    data = JSON.load(file)
+    data.each do |peer_id, peer_values|
+      puts peer_id
+      # TODO sightings
+      # TODO last connected
+
+      n = Node.find_by_node_id(peer_id)
+      if n
+        updates = {}
+        updates[:updated_at] = peer_values['ls']
+        updates[:created_at] = peer_values['fs']
+        updates[:protocols] = (Array(peer_values['ps']) + Array(n.protocols)).uniq
+
+        if peer_values['a'].present? && Array(peer_values['a']) != Array(n.multiaddrs)
+          n.multiaddrs = (Array(peer_values['a']) + Array(n.multiaddrs)).uniq
+          updates[:multiaddrs] = (Array(peer_values['a']) + Array(n.multiaddrs)).uniq
+          updates[:domains] = n.domain_names
+          updates.merge!(n.location_details)
+        end
+
+        if peer_values['av'].present? && n.agent_version != peer_values['av']
+          n.agent_version = peer_values['av']
+          updates[:agent_version] = peer_values['av']
+          updates[:minor_go_ipfs_version] = n.minor_go_ipfs_version
+          updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
+          updates[:reachable] = true
+        end
+        n.update(updates)
+      else
+
+        node_attrs = {
+          node_id: peer_id,
+          multiaddrs: Array(peer_values['a']),
+          agent_version: peer_values['av'],
+          protocols: Array(peer_values['ps']),
+          reachable: peer_values['av'].present?,
+          updated_at: peer_values['ls'],
+          created_at: peer_values['fs'],
+        }
+        node = Node.new(node_attrs)
+
+        if node.multiaddrs.any?
+          node.domains = node.domain_names
+          node.assign_attributes(node.location_details)
+        end
+
+        if node.agent_version.present?
+          node.minor_go_ipfs_version = node.minor_go_ipfs_version
+          node.patch_go_ipfs_version = node.patch_go_ipfs_version
+        end
+
+        node.save
+      end
+
+    end
+  end
+
   def self.update_location_details
     Node.all.find_each(&:update_location_details)
   end
