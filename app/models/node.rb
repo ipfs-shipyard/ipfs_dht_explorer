@@ -16,7 +16,21 @@ class Node < ApplicationRecord
   GEO_ASN_READER = MaxMind::GeoIP2::Reader.new("#{GEO_IP_DIR}/GeoLite2-ASN.mmdb")
   GEO_DOMAIN_READER = MaxMind::GeoIP2::Reader.new("#{GEO_IP_DIR}/GeoIP2-Domain.mmdb")
 
-  scope :before_secio, -> {where(minor_go_ipfs_version: 4).where.not(patch_go_ipfs_version: ['0.4.21','0.4.22','0.4.23'])}
+  SECIO_PATCH_VERSIONS = [
+    '0.4.21',
+    '0.4.22',
+    '0.4.23',
+    '0.4.21-rc3',
+    '0.4.21-dev',
+    '0.4.21-rc2',
+    '0.4.22-rc2',
+    '0.4.22-rc1',
+    '0.4.22-dev',
+    '0.4.23-rc1',
+    '0.4.23-rc2'
+  ]
+
+  scope :before_secio, -> {where(minor_go_ipfs_version: 4).where.not(patch_go_ipfs_version: SECIO_PATCH_VERSIONS)}
 
   def to_s
     node_id
