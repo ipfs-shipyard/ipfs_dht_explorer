@@ -37,6 +37,7 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_record_query_trace (1.8)
     activejob (6.0.3.4)
       activesupport (= 6.0.3.4)
       globalid (>= 0.3.6)
@@ -208,6 +209,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sql_queries_count (0.0.1)
+      rails (> 3.0.0)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -239,6 +242,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_record_query_trace
   bootsnap (>= 1.4.2)
   bootstrap
   byebug
@@ -262,6 +266,7 @@ DEPENDENCIES
   selenium-webdriver
   spring
   spring-watcher-listen (~> 2.0.0)
+  sql_queries_count
   turbolinks (~> 5)
   web-console (>= 3.3.0)
   webdrivers
