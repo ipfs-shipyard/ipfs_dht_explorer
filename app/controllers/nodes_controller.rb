@@ -23,8 +23,9 @@ class NodesController < ApplicationController
   end
 
   def report
+    existing_nodes = Node.where(node_id: params["peers"].keys)
     params["peers"].each do |peer_id, peer_values|
-      n = Node.find_by_node_id(peer_id)
+      n = existing_nodes.detect{|node| node.node_id == peer_id}
       if n
         updates = {}
         updates[:updated_at] = Time.now
@@ -44,7 +45,7 @@ class NodesController < ApplicationController
           updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
           updates[:reachable] = true
         end
-        n.update(updates)
+        n.update_columns(updates)
       else
 
         node_attrs = {
