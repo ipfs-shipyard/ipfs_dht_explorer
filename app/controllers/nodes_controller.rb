@@ -22,6 +22,7 @@ class NodesController < ApplicationController
       n = existing_nodes.detect{|node| node.node_id == peer_id}
       if n
         updates = {}
+        updates[:sightings] = n.sightings++
         updates[:updated_at] = Time.now
         updates[:protocols] = (Array(peer_values['protocols']) + Array(n.protocols)).uniq
 
@@ -47,7 +48,8 @@ class NodesController < ApplicationController
           multiaddrs: Array(peer_values['addresses']),
           agent_version: peer_values['agentVersion'],
           protocols: Array(peer_values['protocols']),
-          reachable: peer_values['agentVersion'].present?
+          reachable: peer_values['agentVersion'].present?,
+          sightings: 1
         }
         node = Node.new(node_attrs)
 

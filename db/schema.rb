@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_03_112814) do
+ActiveRecord::Schema.define(version: 2020_11_05_164725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2020_11_03_112814) do
     t.string "minor_go_ipfs_version"
     t.string "patch_go_ipfs_version"
     t.string "domains", default: [], array: true
+    t.integer "sightings", default: 0
     t.index ["agent_version"], name: "index_nodes_on_agent_version"
     t.index ["country_iso_code"], name: "index_nodes_on_country_iso_code"
     t.index ["minor_go_ipfs_version"], name: "index_nodes_on_minor_go_ipfs_version"

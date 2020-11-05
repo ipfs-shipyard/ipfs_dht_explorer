@@ -191,6 +191,7 @@ class Node < ApplicationRecord
       n = Node.find_by_node_id(peer_id)
       if n
         updates = {}
+        updates[:sightings] = n.sightings + peer_values['n']
         updates[:updated_at] = peer_values['ls']
         updates[:created_at] = peer_values['fs']
         updates[:protocols] = (Array(peer_values['ps']) + Array(n.protocols)).uniq
@@ -209,7 +210,7 @@ class Node < ApplicationRecord
           updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
           updates[:reachable] = true
         end
-        n.update(updates)
+        n.update_columns(updates)
       else
 
         node_attrs = {
@@ -220,6 +221,7 @@ class Node < ApplicationRecord
           reachable: peer_values['av'].present?,
           updated_at: peer_values['ls'],
           created_at: peer_values['fs'],
+          sightings: peer_values['n']
         }
         node = Node.new(node_attrs)
 
