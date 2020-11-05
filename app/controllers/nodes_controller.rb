@@ -76,7 +76,7 @@ class NodesController < ApplicationController
     @scope = Node.all
     apply_filters
     @count = @scope.count
-    @country_iso_codes = @scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(10)
+    @pagy, @country_iso_codes = pagy_array(@scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}, items: 5)
   end
 
   def versions
