@@ -3,12 +3,6 @@ class NodesController < ApplicationController
 
   def overview
     @scope = Node.without_boosters.without_storm
-    # versions
-    # countries
-    # networks
-    # map
-    # graph of new
-    # graph of updated
   end
 
   def index
