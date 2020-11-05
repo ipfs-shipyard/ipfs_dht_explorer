@@ -22,7 +22,7 @@ class NodesController < ApplicationController
       n = existing_nodes.detect{|node| node.node_id == peer_id}
       if n
         updates = {}
-        updates[:sightings] = n.sightings++
+        updates[:sightings] = n.sightings + 1
         updates[:updated_at] = Time.now
         updates[:protocols] = (Array(peer_values['protocols']) + Array(n.protocols)).uniq
 
