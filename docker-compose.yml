@@ -48,6 +48,9 @@ services:
     volumes:
       - 'geoipupdate_data:/usr/share/GeoIP'
 
+  crawler:
+    image: ipfsshipyard/libp2p-dht-scrape-client:latest
+
 volumes:
   pg_data:
   geoipupdate_data:
