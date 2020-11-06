@@ -2,7 +2,7 @@ class NodesController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :report
 
   def overview
-    @scope = Node.without_boosters.without_storm
+    @scope = Node.only_go_ipfs
     apply_filters
   end
 
