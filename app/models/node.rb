@@ -237,7 +237,7 @@ class Node < ApplicationRecord
           node.patch_go_ipfs_version = node.patch_go_ipfs_version
         end
 
-        node.save
+        node.save rescue ArgumentError
       end
     end
     puts "#{data.keys.length} peers imported"
