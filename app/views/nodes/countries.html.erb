@@ -13,10 +13,7 @@
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'domain_name', filter_label: 'Domain', filter_collection: @domains} %>
       <%= render 'extras' %>
-      <%#= render 'range_filter' %>
-    </ul>
-    <ul class="nav nav-pills ml-auto">
-      <%#= render 'sort_filter' %>
+      <%= render 'range_filter' %>
     </ul>
   </div>
 </nav>

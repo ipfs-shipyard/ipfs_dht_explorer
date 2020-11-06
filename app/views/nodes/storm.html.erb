@@ -9,7 +9,7 @@
       <%= render partial: 'excludable_filter', locals: {filter_name: 'reachable', filter_label: 'Reachable', filter_collection: @reachables} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
-      <%#= render 'range_filter' %>
+      <%= render 'range_filter' %>
     </ul>
     <ul class="nav nav-pills ml-auto">
       <%= render 'sort_filter' %>

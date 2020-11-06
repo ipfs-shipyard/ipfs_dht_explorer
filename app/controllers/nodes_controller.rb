@@ -108,6 +108,11 @@ class NodesController < ApplicationController
   end
 
   def apply_filters
+    if params[:range].present?
+      @range = (params[:range].presence || 30).to_i
+      @scope = @scope.where('nodes.updated_at > ?', @range.days.ago)
+    end
+
     @scope = @scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
     @scope = @scope.where("array_to_string(multiaddrs, '||') ILIKE :ip", ip: "%#{params[:ip4]}%") if params[:ip4].present?
     @scope = @scope.where(":protocols = ANY (protocols)", protocols: params[:protocols]) if params[:protocols].present?
