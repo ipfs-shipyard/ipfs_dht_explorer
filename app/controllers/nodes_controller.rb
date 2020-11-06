@@ -134,9 +134,14 @@ class NodesController < ApplicationController
     @scope = @scope.where.not(minor_go_ipfs_version: params[:exclude_minor_go_ipfs_version]) if params[:exclude_minor_go_ipfs_version].present?
     @scope = @scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
 
+    @agent_version_scope = @scope.unscope(where: :agent_version)
+    @agent_version_scope = @agent_version_scope.without_storm if params[:without_storm].present?
+    @agent_version_scope = @agent_version_scope.without_boosters if params[:without_boosters].present?
+
+    @agent_versions = @agent_version_scope.group(:agent_version).count
+
     @domains = @scope.unscope(where: :domains).pluck(:domains).flatten.compact.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}
     @reachables = @scope.unscope(where: :reachable).group(:reachable).count
-    @agent_versions = @scope.unscope(where: :agent_version).group(:agent_version).count
     @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
     @country_names = @scope.unscope(where: :country_name).group(:country_name).count
     @minor_go_ipfs_versions = @scope.unscope(where: :minor_go_ipfs_version).group(:minor_go_ipfs_version).count
