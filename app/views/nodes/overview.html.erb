@@ -37,6 +37,10 @@
 </nav>
 
 <div class="row">
+  <%= line_chart @scope.group(:minor_go_ipfs_version).group_by_week(:updated_at, series: false).count %>
+</div>
+
+<div class="row">
   <div class="col-md-4">
     <h2>Popular Countries</h2>
     <%= pie_chart @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(20), legend: false  %>
