@@ -191,7 +191,7 @@ class Node < ApplicationRecord
       n = Node.find_by_node_id(peer_id)
       if n
         updates = {}
-        updates[:sightings] = n.sightings + peer_values['n']
+        updates[:sightings] = peer_values['n']
         updates[:updated_at] = peer_values['ls']
         updates[:created_at] = peer_values['fs']
         updates[:protocols] = (Array(peer_values['ps']) + Array(n.protocols)).uniq
