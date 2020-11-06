@@ -3,6 +3,7 @@ class NodesController < ApplicationController
 
   def overview
     @scope = Node.without_boosters.without_storm
+    apply_filters
   end
 
   def index

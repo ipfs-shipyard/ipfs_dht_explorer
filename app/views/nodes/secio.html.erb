@@ -11,6 +11,22 @@
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'domain_name', filter_label: 'Domain', filter_collection: @domains} %>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= 'active' if (params[:without_boosters].present? || params[:without_storm].present? || params[:with_addresses].present? || params[:only_go_ipfs].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Extras</a>
+        <div class="dropdown-menu">
+          <% if params[:with_addresses].present? %>
+            <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, with_addresses: nil)) %>">
+              With Addresses
+            </a>
+          <% else %>
+            <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, with_addresses: 'true')) %>">
+              With Addresses
+            </a>
+          <% end %>
+        </div>
+      </li>
+
       <%= render 'range_filter' %>
     </ul>
     <ul class="nav nav-pills ml-auto">

@@ -5,6 +5,8 @@ class Node < ApplicationRecord
   has_many :target_edges, class_name: 'Edge', foreign_key: :target_id
   has_many :target_peers, through: :target_edges, class_name: 'Node'
 
+  scope :with_addresses, -> { where.not(multiaddrs: []) }
+  scope :only_go_ipfs,  -> { where.not(minor_go_ipfs_version:nil)}
   scope :without_boosters, -> { where.not(agent_version: ['hydra-booster/0.7.0', 'hydra-booster/0.7.3', 'dhtbooster/2']) }
   scope :without_storm, -> { where.not(agent_version: ['storm']) }
 
