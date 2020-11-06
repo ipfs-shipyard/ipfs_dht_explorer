@@ -120,6 +120,8 @@ class NodesController < ApplicationController
 
     @scope = @scope.without_storm if params[:without_storm].present?
     @scope = @scope.without_boosters if params[:without_boosters].present?
+    @scope = @scope.with_addresses if params[:with_addresses].present?
+    @scope = @scope.only_go_ipfs if params[:only_go_ipfs].present?
 
     @scope = @scope.where(autonomous_system_organization: params[:asn]) if params[:asn].present?
     @scope = @scope.where(country_name: params[:country_name]) if params[:country_name].present?
