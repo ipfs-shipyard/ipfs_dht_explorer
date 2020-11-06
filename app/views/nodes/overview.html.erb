@@ -47,11 +47,11 @@
   </div>
   <div class="col-md-4">
     <h2>Recently Discovered</h2>
-    <%= pie_chart @scope.group_by_month(:created_at).count, legend: false  %>
+    <%= pie_chart @scope.group_by_week(:created_at).count, legend: false  %>
   </div>
   <div class="col-md-4">
     <h2>Recently Seen</h2>
-    <%= pie_chart @scope.group_by_month(:updated_at).count, legend: false  %>
+    <%= pie_chart @scope.group_by_week(:updated_at).count, legend: false  %>
   </div>
 </div>
 <div class="row">
