@@ -81,7 +81,8 @@ class Node < ApplicationRecord
       longitude:                      geo_details.location.longitude,
       network:                        geo_details.traits.network,
       autonomous_system_number:       asn_details.autonomous_system_number,
-      autonomous_system_organization: asn_details.autonomous_system_organization
+      autonomous_system_organization: asn_details.autonomous_system_organization,
+      domains: domain_names
       }
   end
 

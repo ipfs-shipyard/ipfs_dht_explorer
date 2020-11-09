@@ -93,6 +93,7 @@ GEM
       rake
     flag-icons-rails (3.4.6.1)
       sass-rails
+    foreman (0.87.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     groupdate (5.2.1)
@@ -183,6 +184,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.2.2)
     regexp_parser (1.8.2)
     rubyzip (2.3.0)
     sass-rails (6.0.0)
@@ -198,6 +200,10 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
+    sidekiq (6.1.2)
+      connection_pool (>= 2.2.2)
+      rack (~> 2.0)
+      redis (>= 4.2.0)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -249,6 +255,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   chartkick
   flag-icons-rails
+  foreman
   groupdate
   ipaddr
   iso_country_codes
@@ -264,6 +271,7 @@ DEPENDENCIES
   rails (~> 6.0.3, >= 6.0.3.3)
   sass-rails (>= 6)
   selenium-webdriver
+  sidekiq
   spring
   spring-watcher-listen (~> 2.0.0)
   sql_queries_count
