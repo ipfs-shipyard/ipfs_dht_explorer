@@ -3,6 +3,7 @@ class NodesController < ApplicationController
 
   def overview
     @scope = Node.only_go_ipfs
+    @range = params[:range] ||= 14
     apply_filters
   end
 
