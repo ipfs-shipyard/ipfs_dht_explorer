@@ -28,15 +28,15 @@ class NodesController < ApplicationController
         updates = {}
         updates[:sightings] = n.sightings + 1
         updates[:updated_at] = Time.now
-        updates[:protocols] = (Array(peer_values['protocols']) + Array(n.protocols)).uniq
+        updates[:protocols] = Array(n.protocols)
 
-        if peer_values['addresses'].present? && Array(peer_values['addresses']) != Array(n.multiaddrs)
-          n.multiaddrs = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
-          updates[:multiaddrs] = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
-          updates[:domains] = n.domain_names
-          updates.merge!(n.location_details)
-        end
-
+        # if peer_values['addresses'].present? && Array(peer_values['addresses']) != Array(n.multiaddrs)
+        #   n.multiaddrs = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
+        updates[:multiaddrs] = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
+        #   updates[:domains] = n.domain_names
+        #   updates.merge!(n.location_details)
+        # end
+        #
         if peer_values['agentVersion'].present? && n.agent_version != peer_values['agentVersion']
           n.agent_version = peer_values['agentVersion']
           updates[:agent_version] = peer_values['agentVersion']
@@ -60,10 +60,10 @@ class NodesController < ApplicationController
         }
         node = Node.new(node_attrs)
 
-        if node.multiaddrs.any?
-          node.domains = node.domain_names
-          node.assign_attributes(node.location_details)
-        end
+        # if node.multiaddrs.any?
+        #   node.domains = node.domain_names
+        #   node.assign_attributes(node.location_details)
+        # end
 
         if node.agent_version.present?
           node.minor_go_ipfs_version = node.minor_go_ipfs_version
