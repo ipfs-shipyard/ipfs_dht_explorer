@@ -19,6 +19,8 @@ class NodesController < ApplicationController
 
   def report
     existing_nodes = Node.where(node_id: params["peers"].keys)
+    upserts = []
+
     params["peers"].each do |peer_id, peer_values|
       n = existing_nodes.detect{|node| node.node_id == peer_id}
       if n
@@ -41,7 +43,8 @@ class NodesController < ApplicationController
           updates[:patch_go_ipfs_version] = n.patch_go_ipfs_version
           updates[:reachable] = true
         end
-        n.update_columns(updates)
+        n.assign_attributes(updates)
+        upserts << n.attributes.except("id")
       else
 
         node_attrs = {
@@ -50,7 +53,9 @@ class NodesController < ApplicationController
           agent_version: peer_values['agentVersion'],
           protocols: Array(peer_values['protocols']),
           reachable: peer_values['agentVersion'].present?,
-          sightings: 1
+          sightings: 1,
+          updated_at: Time.now,
+          created_at: Time.now
         }
         node = Node.new(node_attrs)
 
@@ -63,11 +68,12 @@ class NodesController < ApplicationController
           node.minor_go_ipfs_version = node.minor_go_ipfs_version
           node.patch_go_ipfs_version = node.patch_go_ipfs_version
         end
-
-        node.save
+        upserts << node.attributes.except("id")
       end
     end
-    puts params["peers"].keys.length
+
+    Node.upsert_all(upserts, unique_by: :node_id, returning: false)
+
     head :ok
   end
 
