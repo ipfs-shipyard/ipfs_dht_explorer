@@ -25,3 +25,9 @@ Push it to docker hub
 ```
 docker push ipfsshipyard/ipfs_dht_explorer:latest
 ```
+
+To access the rails console:
+
+```
+docker-compose exec app rails console
+```

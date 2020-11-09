@@ -22,7 +22,7 @@ services:
       - internal
     depends_on:
       - database.service.explorer.internal
-      - redis.service.pinning.internal
+      - redis.service.explorer.internal
     volumes:
       - 'geoipupdate_data:/usr/share/GeoIP'
 
