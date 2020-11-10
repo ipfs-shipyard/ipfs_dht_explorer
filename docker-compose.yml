@@ -56,9 +56,12 @@ services:
     image: redis:6.0-alpine
     networks:
       - internal
+    volumes:
+      - redis_data:/var/lib/redis
 
 volumes:
   pg_data:
+  redis_data:
   geoipupdate_data:
     driver: local
 
