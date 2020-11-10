@@ -27,3 +27,4 @@ docker-compose-dev.yml
 .eslintrc
 
 app.json
+.env
