@@ -48,6 +48,7 @@ gem 'foreman'
 
 gem 'omniauth-github'
 gem 'octokit'
+gem 'ipfs-http-client', github: 'andrew/ipfs-http-client'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

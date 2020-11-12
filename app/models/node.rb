@@ -42,6 +42,20 @@ class Node < ApplicationRecord
     node_id
   end
 
+  def ipfs_client
+    @client ||= Ipfs::Client.new( "http://#{ENV.fetch("IPFS_URL") { 'localhost' }}:#{ENV.fetch("IPFS_PORT") { '5001' }}")
+  end
+
+  def ipfs_connect
+    multiaddrs.each do |origin|
+      ipfs_client.swarm_connect("#{origin}/p2p/#{node_id}") rescue Ipfs::Commands::Error
+    end
+  end
+
+  def ipfs_id
+    ipfs_client.id(node_id) rescue Ipfs::Commands::Error
+  end
+
   def geo_details
     return nil unless main_ip
     @geo_details ||= begin
