@@ -1,5 +1,6 @@
 class NodesController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :report
+  skip_before_action :authenticate_user!, only: :report
 
   def overview
     @scope = Node.only_go_ipfs
