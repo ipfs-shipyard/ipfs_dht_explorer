@@ -69,7 +69,7 @@ class NodesController < ApplicationController
     end
 
     inserted = Node.upsert_all(upserts, unique_by: :node_id)
-
+    p inserted
     inserted.each{|id| ResolveMultiaddrsWorker.perform_async(id) }
 
     head :ok
