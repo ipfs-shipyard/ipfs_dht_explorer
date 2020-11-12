@@ -68,4 +68,12 @@ ActiveRecord::Schema.define(version: 2020_11_16_115751) do
     t.index ["node_id"], name: "index_wants_on_node_id"
   end
 
+  create_table "wants", force: :cascade do |t|
+    t.integer "node_id"
+    t.integer "cid_id"
+    t.datetime "created_at", null: false
+    t.index ["cid_id"], name: "index_wants_on_cid_id"
+    t.index ["node_id"], name: "index_wants_on_node_id"
+  end
+
 end

@@ -1,0 +1,35 @@
+<h1>
+  Nodes with most Wants
+</h1>
+
+<p><small class='text-muted'><%== pagy_info @pagy %></small></p>
+
+<div class="row">
+  <div class="col-md-12">
+    <% @nodes.each do |node_id,v| %>
+      <% node = Node.find(node_id) %>
+
+      <div class='node mb-2'>
+        <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
+        <span class='cid'><%= link_to node.node_id, node %></span>
+        <small class='text-muted'><%= number_with_delimiter v %> wants</small>
+        <br>
+        <small class='text-muted'>
+          <% if node.main_ip.present? %>
+            <%= node.main_ip %> -
+          <% end %>
+          <% if node.agent_version.present? %>
+            <%= node.agent_version %> -
+          <% end %>
+          Seen <%= pluralize number_with_delimiter(node.sightings.zero? ? 1 : node.sightings), 'times' %> -
+          Last seen <%= distance_of_time_in_words_to_now node.updated_at %> ago
+        </small>
+      </div>
+
+
+    <% end %>
+
+    <%== pagy_bootstrap_nav(@pagy) %>
+
+  </div>
+</div>

@@ -87,6 +87,9 @@ class NodesController < ApplicationController
 
   def show
     @node = Node.find_by_node_id!(params[:id])
+    @scope = @node.wants.includes(:cid)
+
+    @pagy, @wants = pagy(@scope)
   end
 
   def countries

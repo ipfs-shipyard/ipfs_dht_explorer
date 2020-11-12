@@ -12,6 +12,12 @@ Rails.application.routes.draw do
     match :failure,              to: 'sessions#failure', via: [:get, :post]
   end
 
+  resources :cids do
+    collection do
+      get :wants
+    end
+  end
+
   resources :nodes do
     collection do
       get :countries
