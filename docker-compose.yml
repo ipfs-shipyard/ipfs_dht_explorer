@@ -15,6 +15,7 @@ services:
       - RAILS_SERVE_STATIC_FILES=true
       - RAILS_MAX_THREADS=5
       - REDIS_URL=redis://redis.service.explorer.internal
+      - IPFS_URL=ipfs.service.pinning.internal
     networks:
       - internal
     depends_on:
@@ -58,6 +59,22 @@ services:
       - internal
     volumes:
       - redis_data:/var/lib/redis
+
+ipfs.service.pinning.internal:
+    image: ipfs/go-ipfs:latest
+    networks:
+      - internal
+    environment:
+      - IPFS_PROFILE=server
+      - IPFS_PATH=/ipfsdata
+    volumes:
+      - ./data/ipfs:/ipfsdata
+    ports:
+      - "4001:4001"
+      - "4003:4003"
+      - "8080:8080"
+      - "8081:8081"
+      - "5001:5001"
 
 volumes:
   pg_data:
