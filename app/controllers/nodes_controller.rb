@@ -23,6 +23,10 @@ class NodesController < ApplicationController
     existing_nodes = Node.where(node_id: params["peers"].keys)
     upserts = []
 
+    excluded_attribute_names = ["id","country_iso_code","country_name",
+      "most_specific_subdivision_name","city_name","postal_code","accuracy_radius",
+      "latitude","longitude","network","autonomous_system_number","autonomous_system_organization","domains"]
+
     params["peers"].each do |peer_id, peer_values|
       n = existing_nodes.detect{|node| node.node_id == peer_id}
       if n
@@ -41,7 +45,7 @@ class NodesController < ApplicationController
           updates[:reachable] = true
         end
         n.assign_attributes(updates)
-        upserts << n.attributes.except("id")
+        upserts << n.attributes.except(*excluded_attribute_names)
       else
 
         node_attrs = {
@@ -60,7 +64,7 @@ class NodesController < ApplicationController
           node.minor_go_ipfs_version = node.minor_go_ipfs_version
           node.patch_go_ipfs_version = node.patch_go_ipfs_version
         end
-        upserts << node.attributes.except("id")
+        upserts << node.attributes.except(*excluded_attribute_names)
       end
     end
 
