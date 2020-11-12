@@ -1,4 +1,6 @@
 class Node < ApplicationRecord
+  has_many :wants
+
   has_many :source_edges, class_name: 'Edge', foreign_key: :source_id
   has_many :source_peers, through: :source_edges, class_name: 'Node'
 
@@ -33,6 +35,10 @@ class Node < ApplicationRecord
   scope :before_secio, -> {where(minor_go_ipfs_version: 4).where.not(patch_go_ipfs_version: SECIO_PATCH_VERSIONS)}
 
   def to_s
+    node_id
+  end
+
+  def to_param
     node_id
   end
 

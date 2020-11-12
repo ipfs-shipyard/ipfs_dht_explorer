@@ -71,7 +71,7 @@ class NodesController < ApplicationController
   end
 
   def show
-    @node = Node.find(params[:id])
+    @node = Node.find_by_node_id!(params[:id])
   end
 
   def countries
