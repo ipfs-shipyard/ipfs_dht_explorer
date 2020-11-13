@@ -14,7 +14,7 @@
 
 <h4>IPs</h4>
 <ul>
-  <% @node.ip4_addresses.each do |addr| %>
+  <% @node.ip4_addresses.sort.each do |addr| %>
     <li>
       <%= link_to addr, nodes_path(ip4: addr) %>
       <% if domain = Node.domain_lookup(addr) %>
@@ -22,7 +22,7 @@
       <% end %>
     </li>
   <% end %>
-  <% @node.ip6_addresses.each do |addr| %>
+  <% @node.ip6_addresses.sort.each do |addr| %>
     <li>
       <%= link_to addr, nodes_path(ip6: addr) %>
       <% if domain = Node.domain_lookup(addr) %>
@@ -43,7 +43,7 @@
 
 <h4>MultiAddrs</h4>
 <ul>
-  <% @node.multiaddrs.each do |addr| %>
+  <% @node.multiaddrs.sort.each do |addr| %>
     <li>
       <%= link_to addr, nodes_path(addr: addr) %>
     </li>
@@ -52,7 +52,7 @@
 
 <h4>Protocols</h4>
 <ul>
-  <% @node.protocols.each do |protocol| %>
+  <% @node.protocols.sort.each do |protocol| %>
     <li>
       <%= link_to protocol, nodes_path(protocols: protocol) %>
     </li>
