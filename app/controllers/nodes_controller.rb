@@ -22,6 +22,7 @@ class NodesController < ApplicationController
   def report
     existing_nodes = Node.where(node_id: params["peers"].keys)
     upserts = []
+    inserts = []
 
     excluded_attribute_names = ["id","country_iso_code","country_name",
       "most_specific_subdivision_name","city_name","postal_code","accuracy_radius",
@@ -64,11 +65,12 @@ class NodesController < ApplicationController
           node.minor_go_ipfs_version = node.minor_go_ipfs_version
           node.patch_go_ipfs_version = node.patch_go_ipfs_version
         end
-        upserts << node.attributes.except(*excluded_attribute_names)
+        inserts << node.attributes.except(*excluded_attribute_names)
       end
     end
 
-    inserted = Node.upsert_all(upserts, unique_by: :node_id)
+    updated = Node.upsert_all(upserts, unique_by: :node_id)
+    inserted = Node.upsert_all(inserts, unique_by: :node_id)
     p inserted
     inserted.each{|node| ResolveMultiaddrsWorker.perform_async(node['id']) }
 
