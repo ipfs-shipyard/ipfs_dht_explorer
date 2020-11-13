@@ -58,7 +58,7 @@ services:
     networks:
       - internal
     volumes:
-      - redis_data:/var/lib/redis
+      - redis_data:/data
 
   ipfs.service.pinning.internal:
       image: ipfs/go-ipfs:latest
