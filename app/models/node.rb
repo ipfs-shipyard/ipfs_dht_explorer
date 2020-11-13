@@ -46,6 +46,10 @@ class Node < ApplicationRecord
     @client ||= Ipfs::Client.new( "http://#{ENV.fetch("IPFS_URL") { 'localhost' }}:#{ENV.fetch("IPFS_PORT") { '5001' }}")
   end
 
+  def self.peers
+    ipfs_client.swarm_peers['Peers']
+  end
+
   def ipfs_connect
     addrs = public_multi_addrs.map{|origin| "#{origin}/p2p/#{node_id}" }
     addrs += ["/p2p/#{node_id}"]
