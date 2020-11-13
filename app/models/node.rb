@@ -47,8 +47,8 @@ class Node < ApplicationRecord
   end
 
   def ipfs_connect
-    addrs = multiaddrs.map{|origin| "#{origin}/p2p/#{node_id}" }
-    addrs = ["/p2p/#{node_id}"] if addrs.blank?
+    addrs = public_multi_addrs.map{|origin| "#{origin}/p2p/#{node_id}" }
+    addrs += ["/p2p/#{node_id}"]
     addrs.each do |addr|
       begin
         Node.ipfs_client.swarm_connect(addr)
@@ -144,6 +144,13 @@ class Node < ApplicationRecord
 
   def ip_addresses
     ip4_addresses + ip6_addresses
+  end
+
+  def public_multi_addrs
+    multiaddrs.select do |a|
+      ip = IPAddr.new(a.split('/')[2])
+      !ip.loopback? && !ip.private? && !ip.link_local?
+    end
   end
 
   def ip4_addresses
