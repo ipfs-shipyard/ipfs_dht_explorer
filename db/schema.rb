@@ -10,11 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_05_164725) do
+ActiveRecord::Schema.define(version: 2020_11_16_115751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
+
+  create_table "cids", force: :cascade do |t|
+    t.string "cid"
+    t.index ["cid"], name: "index_cids_on_cid", unique: true
+  end
 
   create_table "edges", force: :cascade do |t|
     t.integer "source_id"
@@ -52,6 +57,15 @@ ActiveRecord::Schema.define(version: 2020_11_05_164725) do
     t.index ["country_iso_code"], name: "index_nodes_on_country_iso_code"
     t.index ["minor_go_ipfs_version"], name: "index_nodes_on_minor_go_ipfs_version"
     t.index ["node_id"], name: "index_nodes_on_node_id", unique: true
+    t.index ["updated_at"], name: "index_nodes_on_updated_at"
+  end
+
+  create_table "wants", force: :cascade do |t|
+    t.integer "node_id"
+    t.integer "cid_id"
+    t.datetime "created_at", null: false
+    t.index ["cid_id"], name: "index_wants_on_cid_id"
+    t.index ["node_id"], name: "index_wants_on_node_id"
   end
 
 end
