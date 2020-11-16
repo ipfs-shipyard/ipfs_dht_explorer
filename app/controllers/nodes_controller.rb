@@ -4,7 +4,6 @@ class NodesController < ApplicationController
 
   def overview
     @scope = Node.only_go_ipfs
-    @range = params[:range] ||= 14
     apply_filters
     if @range > 90
       @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_month(:updated_at, series: false)
@@ -96,7 +95,7 @@ class NodesController < ApplicationController
   end
 
   def versions
-    @scope = Node.minor_go_ipfs_version
+    @scope = Node.only_go_ipfs
     apply_filters
     @count = @scope.count
     @minor_go_ipfs_versions = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| k}
@@ -122,10 +121,8 @@ class NodesController < ApplicationController
   end
 
   def apply_filters
-    if params[:range].present?
-      @range = (params[:range].presence || 30).to_i
-      @scope = @scope.where('nodes.updated_at > ?', @range.days.ago)
-    end
+    @range = (params[:range].presence || 14).to_i
+    @scope = @scope.where('nodes.updated_at > ?', @range.days.ago)
 
     @scope = @scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
     @scope = @scope.where("array_to_string(multiaddrs, '||') ILIKE :ip", ip: "%#{params[:ip4]}%") if params[:ip4].present?
