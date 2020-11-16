@@ -16,4 +16,8 @@ module ApplicationHelper
     title += "#{@page_title} - " if @page_title.present?
     title += "IPFS DHT Explorer"
   end
+
+  def diff_class(count)
+    count > 0 ? 'text-success' : 'text-danger'
+  end
 end

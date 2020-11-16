@@ -42,15 +42,91 @@
 <div class="row">
   <div class="col-md-4">
     <h2>Popular Countries</h2>
-    <%= pie_chart @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(20), legend: false  %>
+    <% count = @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
+    <% d = Date.today - @range %>
+    <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:country_name).count.reject{|k,v| k.blank?} %>
+    <%= pie_chart count, legend: false  %>
+
+    <table class='table'>
+      <% count.first(5).each do |k,v| %>
+        <tr>
+          <td>
+            <%= k %>
+          </td>
+          <td>
+            <%= v %>
+            <% if y = previous_count[k] %>
+              <% diff = v - y %>
+              <% if diff != 0 %>
+                <span class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '-' %><%= diff %>
+                </span>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+
   </div>
   <div class="col-md-4">
     <h2>Popular Minor Versions</h2>
-    <%= pie_chart @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.map{|k,v| ["0.#{k}.X", v]}.first(20), legend: false  %>
+    <% count = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.map{|k,v| ["0.#{k}.X", v]} %>
+    <% d = Date.today - @range %>
+    <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.transform_keys{|k| "0.#{k}.X"} %>
+
+    <%= pie_chart count, legend: false  %>
+
+    <table class='table'>
+      <% count.first(5).each do |k,v| %>
+        <tr>
+          <td>
+            <%= k %>
+          </td>
+          <td>
+            <%= v %>
+            <% if y = previous_count[k] %>
+              <% diff = v - y %>
+              <% if diff != 0 %>
+                <span class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '-' %><%= diff %>
+                </span>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
   </div>
   <div class="col-md-4">
     <h2>Popular Patch Versions</h2>
-    <%= pie_chart @scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.first(20), legend: false  %>
+
+    <% count = @scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
+    <% d = Date.today - @range %>
+    <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?} %>
+
+    <%= pie_chart count, legend: false  %>
+
+    <table class='table'>
+      <% count.first(5).each do |k,v| %>
+        <tr>
+          <td>
+            <%= k %>
+          </td>
+          <td>
+            <%= v %>
+            <% if y = previous_count[k] %>
+              <% diff = v - y %>
+              <% if diff != 0 %>
+                <span class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '-' %><%= diff %>
+                </span>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
   </div>
 </div>
 
