@@ -4,14 +4,23 @@
     <% if params[filter_name].present? %>
       <% Array(params[filter_name]).each do |selection| %>
         <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge({:page => nil, filter_name => Array(params[filter_name].dup) - [selection]})) %>">
-          <%= selection %>
+          <% if filter_name == 'minor_go_ipfs_version' %>
+            <%= "0.#{selection}.X" %>
+          <% else %>
+            <%= selection %>
+          <% end %>
         </a>
       <% end %>
     <% end %>
     <% if params["exclude_#{filter_name}"].present? %>
       <% Array(params["exclude_#{filter_name}"]).each do |exclude_selection| %>
         <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge({:page => nil, "exclude_#{filter_name}" => Array(params["exclude_#{filter_name}"].dup) - [exclude_selection]})) %>">
-          Excluding: <%= exclude_selection %>
+          Excluding:
+          <% if filter_name == 'minor_go_ipfs_version' %>
+            <%= "0.#{exclude_selection}.X" %>
+          <% else %>
+            <%= exclude_selection %>
+          <% end %>
         </a>
       <% end %>
     <% end %>
@@ -21,8 +30,10 @@
            data-alt="<%= url_for(request.params.merge({:page => nil, "exclude_#{filter_name}" => Array(params["exclude_#{filter_name}"].dup) << option})) %>"
            data-add="<%= url_for(request.params.merge({:page => nil, filter_name => Array(params[filter_name].dup) << option})) %>"
            href="<%= url_for(request.params.merge({:page => nil, filter_name => option})) %>"
-          title="cmd+click to exclude <%= option %>&#013;alt/option+click to include <%= option %>">
-          <%= option %>
+          title="cmd+click to exclude <%= option %>&#013;alt/option+click to include <%= filter_name == 'minor_go_ipfs_version' ? "0.#{option}.X" : option %>">
+
+          <%= filter_name == 'minor_go_ipfs_version' ? "0.#{option}.X" : option %>
+
           <small class='text-muted'>
             <%= number_with_delimiter count %>
           </small>
