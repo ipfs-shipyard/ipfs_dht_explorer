@@ -36,7 +36,7 @@
 </nav>
 
 <div class="row">
-  <%= line_chart @graph_scope.count.transform_keys { |k| ["0.#{k.first}.X", k.last] } %>
+  <%= line_chart @graph %>
 </div>
 
 <div class="row">
@@ -55,5 +55,5 @@
 </div>
 
 <p>
-  <small class='text-muted'>Ignoring storm and booster nodes</small>
+  <small class='text-muted'>Reachable go-ipfs nodes, ignoring storm and booster nodes</small>
 </p>

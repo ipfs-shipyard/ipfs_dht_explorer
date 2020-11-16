@@ -5,12 +5,14 @@ class NodesController < ApplicationController
   def overview
     @scope = Node.only_go_ipfs
     apply_filters
-    if @range > 90
-      @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_month(:updated_at, series: false)
-    elsif @range > 30
-      @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_week(:updated_at, series: false)
-    else
-      @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_day(:updated_at, series: false)
+
+    @graph = {}
+    (Date.today-@range..Date.today).map do |d|
+      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:minor_go_ipfs_version).count
+      count.each do |k,v|
+        key = ["0.#{k}.X", d]
+        @graph[key] = v
+      end
     end
   end
 
