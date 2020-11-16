@@ -47,20 +47,35 @@
     <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:country_name).count.reject{|k,v| k.blank?} %>
     <%= pie_chart count, legend: false  %>
 
-    <table class='table'>
+    <table class='table' >
+      <% total = count.sum{|k,v| v} %>
+      <% previous_total = previous_count.sum{|k,v| v} %>
+
       <% count.first(5).each do |k,v| %>
         <tr>
-          <td>
+          <td class='align-middle'>
             <%= k %>
           </td>
-          <td>
-            <%= v %>
+          <td class='align-middle'>
+            <%= number_with_delimiter v %>
             <% if y = previous_count[k] %>
               <% diff = v - y %>
               <% if diff != 0 %>
-                <span class='<%= diff_class(diff) %>'>
-                  <%= diff > 0 ? '+' : '-' %><%= diff %>
-                </span>
+                <small class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '' %><%= number_with_delimiter diff %>
+                </small>
+              <% end %>
+            <% end %>
+          </td>
+          <td class='align-middle'>
+            <%= percentage = (v.to_f/total*100).round(1) %>%
+            <% if y = previous_count[k] %>
+              <% previous_percentage = (y.to_f/previous_total*100).round(1) %>
+              <% diff = (percentage - previous_percentage).round(1) %>
+              <% if diff != 0 %>
+                <small title='previously <%= previous_percentage %>%' class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '' %><%= diff %>%
+                </small>
               <% end %>
             <% end %>
           </td>
@@ -78,19 +93,34 @@
     <%= pie_chart count, legend: false  %>
 
     <table class='table'>
+      <% total = count.sum{|k,v| v} %>
+      <% previous_total = previous_count.sum{|k,v| v} %>
+
       <% count.first(5).each do |k,v| %>
         <tr>
           <td>
             <%= k %>
           </td>
           <td>
-            <%= v %>
+            <%= number_with_delimiter v %>
             <% if y = previous_count[k] %>
               <% diff = v - y %>
               <% if diff != 0 %>
-                <span class='<%= diff_class(diff) %>'>
-                  <%= diff > 0 ? '+' : '-' %><%= diff %>
-                </span>
+                <small title='peviously <%= y %>' class=' <%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '' %><%= number_with_delimiter diff %>
+                </small>
+              <% end %>
+            <% end %>
+          </td>
+          <td>
+            <%= percentage = (v.to_f/total*100).round(1) %>%
+            <% if y = previous_count[k] %>
+              <% previous_percentage = (y.to_f/previous_total*100).round(1) %>
+              <% diff = (percentage - previous_percentage).round(1) %>
+              <% if diff != 0 %>
+                <small title='previously <%= previous_percentage %>%' class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '' %><%= diff %>%
+                </small>
               <% end %>
             <% end %>
           </td>
@@ -108,19 +138,34 @@
     <%= pie_chart count, legend: false  %>
 
     <table class='table'>
+      <% total = count.sum{|k,v| v} %>
+      <% previous_total = previous_count.sum{|k,v| v} %>
+
       <% count.first(5).each do |k,v| %>
         <tr>
           <td>
             <%= k %>
           </td>
           <td>
-            <%= v %>
+            <%= number_with_delimiter v %>
             <% if y = previous_count[k] %>
               <% diff = v - y %>
               <% if diff != 0 %>
-                <span class='<%= diff_class(diff) %>'>
-                  <%= diff > 0 ? '+' : '-' %><%= diff %>
-                </span>
+                <small class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '' %><%= number_with_delimiter diff %>
+                </small>
+              <% end %>
+            <% end %>
+          </td>
+          <td>
+            <%= percentage = (v.to_f/total*100).round(1) %>%
+            <% if y = previous_count[k] %>
+              <% previous_percentage = (y.to_f/previous_total*100).round(1) %>
+              <% diff = (percentage - previous_percentage).round(1) %>
+              <% if diff != 0 %>
+                <small title='previously <%= previous_percentage %>%' class='<%= diff_class(diff) %>'>
+                  <%= diff > 0 ? '+' : '' %><%= diff %>%
+                </small>
               <% end %>
             <% end %>
           </td>
