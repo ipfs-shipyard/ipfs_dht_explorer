@@ -1,24 +1,6 @@
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle <%= 'active' if (params[:without_boosters].present? || params[:without_storm].present? || params[:with_addresses].present? || params[:only_go_ipfs].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Extras</a>
   <div class="dropdown-menu">
-    <% if params[:without_boosters].present? %>
-      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, without_boosters: nil)) %>">
-        Exclude booster nodes
-      </a>
-    <% else %>
-      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, without_boosters: 'true')) %>">
-        Exclude booster nodes
-      </a>
-    <% end %>
-    <% if params[:without_storm].present? %>
-      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, without_storm: nil)) %>">
-        Exclude storm
-      </a>
-    <% else %>
-      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, without_storm: 'true')) %>">
-        Exclude storm
-      </a>
-    <% end %>
     <% if params[:with_addresses].present? %>
       <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, with_addresses: nil)) %>">
         With Addresses
@@ -26,15 +8,6 @@
     <% else %>
       <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, with_addresses: 'true')) %>">
         With Addresses
-      </a>
-    <% end %>
-    <% if params[:only_go_ipfs].present? %>
-      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, only_go_ipfs: nil)) %>">
-        Only go-ipfs
-      </a>
-    <% else %>
-      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, only_go_ipfs: 'true')) %>">
-        Only go-ipfs
       </a>
     <% end %>
   </div>

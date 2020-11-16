@@ -6,10 +6,8 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="nav nav-pills mr-auto">
-      <%= render partial: 'excludable_filter', locals: {filter_name: 'agent_version', filter_label: 'Version', filter_collection: @agent_versions} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'minor_go_ipfs_version', filter_label: 'Minor', filter_collection: @minor_go_ipfs_versions} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'patch_go_ipfs_version', filter_label: 'Patch', filter_collection: @patch_go_ipfs_versions} %>
-      <%= render partial: 'excludable_filter', locals: {filter_name: 'reachable', filter_label: 'Reachable', filter_collection: @reachables} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
       <%= render partial: 'excludable_filter', locals: {filter_name: 'domain_name', filter_label: 'Domain', filter_collection: @domains} %>
