@@ -37,7 +37,7 @@
 </nav>
 
 <div class="row">
-  <%= line_chart @scope.group(:minor_go_ipfs_version).group_by_week(:updated_at, series: false).count.transform_keys { |k| ["0.#{k.first}.X", k.last] } %>
+  <%= line_chart @graph_scope.count.transform_keys { |k| ["0.#{k.first}.X", k.last] } %>
 </div>
 
 <div class="row">

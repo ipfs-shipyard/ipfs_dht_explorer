@@ -6,6 +6,13 @@ class NodesController < ApplicationController
     @scope = Node.only_go_ipfs
     @range = params[:range] ||= 14
     apply_filters
+    if @range > 90
+      @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_month(:updated_at, series: false)
+    elsif @range > 30
+      @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_week(:updated_at, series: false)
+    else
+      @graph_scope = @scope.group(:minor_go_ipfs_version).group_by_day(:updated_at, series: false)
+    end
   end
 
   def index
