@@ -123,7 +123,7 @@ class NodesController < ApplicationController
   end
 
   def apply_filters
-    @range = (params[:range].presence || 14).to_i
+    @range = (params[:range].presence || 7).to_i
     @scope = @scope.where('nodes.updated_at > ?', @range.days.ago)
 
     @scope = @scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
