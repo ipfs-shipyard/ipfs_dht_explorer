@@ -34,17 +34,22 @@
         </h4>
         <% agent_version_counts = scope.group(:agent_version).count.select{|k,v| k.present?}.sort_by{|k,v| -v} %>
         <%= pie_chart agent_version_counts, legend: false  %>
-        <ul class='list-unstyled'>
+        <table class='table table-sm'>
           <% agent_version_counts_total = agent_version_counts.sum(&:last) %>
           <% agent_version_counts.first(8).each do |agent_version, count| %>
-            <li>
-              <%= link_to agent_version, nodes_path(agent_version: agent_version) %>
-              <small>
-                <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/agent_version_counts_total.to_f*100).round(1) %>%)</span>
-              </small>
-            </li>
+            <tr>
+              <td>
+                <%= link_to agent_version.truncate(20), nodes_path(agent_version: agent_version), title: agent_version %>
+              </td>
+              <td>
+                <%= number_with_delimiter count %>
+              </td>
+              <td>
+                <%= (count/agent_version_counts_total.to_f*100).round(1) %>%
+              </td>
+            </tr>
           <% end %>
-        </ul>
+        </table>
       </div>
       <div class="col-md-3">
         <% patch_scope = scope.group(:patch_go_ipfs_version).count.select{|k,v| k.present?}.sort_by{|k,v| -v} %>
@@ -52,18 +57,23 @@
           Patch versions
         </h4>
         <%= pie_chart patch_scope, legend: false  %>
-        <ul class='list-unstyled'>
+        <table class='table table-sm'>
           <% patch_go_ipfs_version_counts = patch_scope %>
           <% patch_go_ipfs_version_counts_total = patch_go_ipfs_version_counts.sum(&:last) %>
           <% patch_go_ipfs_version_counts.first(8).each do |patch_go_ipfs_version, count| %>
-            <li>
-              <%= link_to patch_go_ipfs_version, nodes_path(patch_go_ipfs_version: patch_go_ipfs_version) %>
-              <small>
-                <%= number_with_delimiter count %> <span title='percentage of total reachable'>(<%= (count/patch_go_ipfs_version_counts_total.to_f*100).round(1) %>%)</span>
-              </small>
-            </li>
+            <tr>
+              <td>
+                <%= link_to patch_go_ipfs_version, nodes_path(patch_go_ipfs_version: patch_go_ipfs_version) %>
+              </td>
+              <td>
+                <%= number_with_delimiter count %>
+              </td>
+              <td>
+                <%= (count/patch_go_ipfs_version_counts_total.to_f*100).round(1) %>%
+              </td>
+            </tr>
           <% end %>
-        </ul>
+        </table>
       </div>
       <div class="col-md-3">
         <% country_scope = scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
@@ -71,19 +81,22 @@
 
         <%= pie_chart country_scope, legend: false  %>
 
-        <ul class='list-unstyled'>
+        <table class='table table-sm'>
           <% country_scope.first(8).each do |country_iso_code, count| %>
-            <% code = IsoCountryCodes.find(country_iso_code) %>
-            <% country_name = code.name %>
-            <li>
-              <%= flag_icon(country_iso_code, squared: true) %>
-              <%= link_to country_name, nodes_path(country_iso_code: country_iso_code) %>
-              <small>
+            <tr>
+              <td>
+                <%= flag_icon(country_iso_code, squared: true) %>
+                <%= link_to country_iso_code, nodes_path(country_iso_code: country_iso_code) %>
+              </td>
+              <td>
+                <%= count %>
+              </td>
+              <td>
                 <%= (count/total_count.to_f*100).round(1) %>%
-              </small>
-            </li>
+              </td>
+            </tr>
           <% end %>
-        </ul>
+        </table>
       </div>
       <div class="col-md-3">
         <% network_scope = scope.group(:autonomous_system_organization).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
@@ -91,16 +104,21 @@
 
         <%= pie_chart network_scope, legend: false  %>
 
-        <ul class='list-unstyled'>
+        <table class='table table-sm'>
           <% network_scope.first(8).each do |asn, count| %>
-            <li>
-              <%= link_to asn.truncate(20) || 'Unknown', nodes_path(asn: asn) %>
-              <small>
+            <tr>
+              <td>
+                <%= link_to asn.truncate(18) || 'Unknown', nodes_path(asn: asn), title: asn %>
+              </td>
+              <td>
+                <%= count %>
+              </td>
+              <td>
                 <%= (count/total_count.to_f*100).round(1) %>%
-              </small>
-            </li>
+              </td>
+            </tr>
           <% end %>
-        </ul>
+        </table>
       </div>
     </div>
 
