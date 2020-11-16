@@ -7,7 +7,7 @@ class NodesController < ApplicationController
     apply_filters
 
     @graph = {}
-    (Date.today-@range..Date.today).map do |d|
+    (Date.today-(@range+1)..Date.today).map do |d|
       count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:minor_go_ipfs_version).count
       count.each do |k,v|
         key = ["0.#{k}.X", d]
