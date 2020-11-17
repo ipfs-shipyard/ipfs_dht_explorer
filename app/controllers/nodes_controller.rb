@@ -92,6 +92,7 @@ class NodesController < ApplicationController
 
     if updated_addrs.any?
       puts "#{updated_addrs.length} updated_addrs"
+      updated_addrs.each{|id| ResolveMultiaddrsWorker.perform_async(id) }
     end
 
     head :ok
