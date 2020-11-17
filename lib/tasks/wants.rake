@@ -18,16 +18,16 @@ namespace :wants do
     #       # print '.'
     #       parts = line.split(' ')
     #
-    #       # node = Node.find_by_node_id(parts[4])
+    #       # node = Node.find_by_node_id(parts[6])
     #       # next if node.nil?
-    #       # cid = Cid.find_or_create_by(cid: parts[6])
+    #       # cid = Cid.find_or_create_by(cid: parts[8])
     #       # want = Want.create(node_id: node.id, cid_id: cid.id, created_at: parts[0])
     #       # puts want.id
     #       # first_time = DateTime.parse(parts[0]).to_time if first_time.nil?
     #       # last_time = parts[0]
     #
-    #       peers[parts[4]] << parts[6]
-    #       cids << parts[6]
+    #       peers[parts[6]] << parts[8]
+    #       cids << parts[8]
     #
     #     # elsif line.match?('want-have')
     #         # parts = line.split('want-have')
@@ -38,12 +38,12 @@ namespace :wants do
     #   end
     # end
 
-    File.open("data/ipfs_wants2.log", "r") do |f|
+    File.open("data/logs.txt", "r") do |f|
       f.each_line.with_index do |line,i|
         if line.match?(' wants ')
           parts = line.split(' ')
-          peers[parts[4]] << parts[6]
-          cids << parts[6]
+          peers[parts[6]] << parts[8]
+          cids << parts[8]
         end
       end
     end
