@@ -3,7 +3,9 @@
 </h1>
 
 <p>
-  Last seen: <%= distance_of_time_in_words_to_now @node.updated_at %> ago
+  First seen: <%= distance_of_time_in_words_to_now @node.created_at %> ago<br>
+  Last seen: <%= distance_of_time_in_words_to_now @node.updated_at %> ago<br>
+  Sightings: <%= number_with_delimiter @node.sightings %>
 </p>
 
 <% if @node.agent_version.present? %>
@@ -30,64 +32,63 @@
       <% end %>
     </li>
   <% end %>
-
 </ul>
 
 <h4>Location</h4>
 <p>
-<% [:country_name, :city_name, :most_specific_subdivision_name, :autonomous_system_organization, :network, :latitude, :longitude].each do |field| %>
-  <% next if @node.send(field).blank? %>
-  <%= field.to_s.humanize %>: <strong><%= @node.send(field) %></strong> <br>
-<% end %>
+  <% if @node.network.present? %>
+    <% [:country_name, :city_name, :most_specific_subdivision_name, :autonomous_system_organization, :network, :latitude, :longitude].each do |field| %>
+      <% next if @node.send(field).blank? %>
+      <%= field.to_s.humanize %>: <strong><%= @node.send(field) %></strong> <br>
+    <% end %>
+  <% else %>
+    Unknown
+  <% end %>
 </p>
 
 <h4>MultiAddrs</h4>
 <ul>
-  <% @node.multiaddrs.sort.each do |addr| %>
-    <li>
-      <%= link_to addr, nodes_path(addr: addr) %>
-    </li>
+  <% if @node.multiaddrs.any? %>
+    <% @node.multiaddrs.each do |addr| %>
+      <li>
+        <%= link_to addr, nodes_path(addr: addr) %>
+      </li>
+    <% end %>
+  <% else %>
+    <li>Unknown</li>
   <% end %>
 </ul>
 
 <h4>Protocols</h4>
 <ul>
-  <% @node.protocols.sort.each do |protocol| %>
-    <li>
-      <%= link_to protocol, nodes_path(protocols: protocol) %>
-    </li>
+  <% if @node.protocols.any? %>
+    <% @node.protocols.each do |protocol| %>
+      <li>
+        <%= link_to protocol, nodes_path(protocols: protocol) %>
+      </li>
+    <% end %>
+  <% else %>
+    <li>Unknown</li>
   <% end %>
 </ul>
 
-<h4>Wants</h4>
-<p><small class='text-muted'>
-  <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique cids
-</small></p>
-<div class="row">
-  <div class="col-md-12">
-    <% @wants.each do |want| %>
-      <div class='want mb-2'>
-        <span class='cid'><%= link_to want.cid.cid, cid_path(want.cid.cid) %></span><br>
-        <small class='text-muted'>
-          <%= want.created_at %>
-        </small>
-      </div>
-    <% end %>
+<% if @wants.any? %>
+  <h4>Wants</h4>
+  <p><small class='text-muted'>
+    <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique cids
+  </small></p>
+  <div class="row">
+    <div class="col-md-12">
+      <% @wants.each do |want| %>
+        <div class='want mb-2'>
+          <span class='cid'><%= link_to want.cid.cid, cid_path(want.cid.cid) %></span><br>
+          <small class='text-muted'>
+            <%= want.created_at %>
+          </small>
+        </div>
+      <% end %>
 
-    <%== pagy_bootstrap_nav(@pagy) %>
+      <%== pagy_bootstrap_nav(@pagy) %>
+    </div>
   </div>
-</div>
-
-
-<!--
-<h4>Source Peers (<%= @node.source_peers.count %>)</h4>
-<ul>
-  <%= render @node.source_peers.order('peers_count DESC') %>
-</ul>
-
-<h4>Target Peers (<%= @node.target_peers.count %>)</h4>
-<ul>
-  <%= render @node.target_peers.order('peers_count DESC') %>
-</ul>
-
- -->
+<% end %>
