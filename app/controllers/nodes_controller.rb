@@ -31,6 +31,7 @@ class NodesController < ApplicationController
     existing_nodes = Node.where(node_id: params["peers"].keys)
     upserts = []
     inserts = []
+    updated_addrs = []
 
     excluded_attribute_names = ["id","country_iso_code","country_name",
       "most_specific_subdivision_name","city_name","postal_code","accuracy_radius",
@@ -42,9 +43,9 @@ class NodesController < ApplicationController
         updates = {}
         updates[:sightings] = n.sightings + 1
         updates[:updated_at] = Time.now
-        updates[:protocols] = Array(n.protocols)
+        updates[:protocols] = Array(n.protocols).sort
 
-        updates[:multiaddrs] = peer_values['addresses'] if peer_values['addresses'].present?
+        updates[:multiaddrs] = Array(peer_values['addresses']).sort if peer_values['addresses'].present?
 
         if peer_values['agentVersion'].present? && n.agent_version != peer_values['agentVersion']
           n.agent_version = peer_values['agentVersion']
@@ -54,14 +55,15 @@ class NodesController < ApplicationController
           updates[:reachable] = true
         end
         n.assign_attributes(updates)
+        updated_addrs << n.id if n.multiaddrs_changed?
         upserts << n.attributes.except(*excluded_attribute_names)
       else
 
         node_attrs = {
           node_id: peer_id,
-          multiaddrs: Array(peer_values['addresses']),
+          multiaddrs: Array(peer_values['addresses']).sort,
           agent_version: peer_values['agentVersion'],
-          protocols: Array(peer_values['protocols']),
+          protocols: Array(peer_values['protocols']).sort,
           reachable: peer_values['agentVersion'].present?,
           sightings: 1,
           updated_at: Time.now,
@@ -86,6 +88,10 @@ class NodesController < ApplicationController
       inserted = Node.upsert_all(inserts, unique_by: :node_id)
       puts "inserted #{inserted.length}/#{params["peers"].keys.length}"
       inserted.each{|node| ResolveMultiaddrsWorker.perform_async(node['id']) }
+    end
+
+    if updated_addrs.any?
+      puts "#{updated_addrs.length} updated_addrs"
     end
 
     head :ok
