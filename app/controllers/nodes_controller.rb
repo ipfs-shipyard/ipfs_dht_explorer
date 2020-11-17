@@ -44,7 +44,7 @@ class NodesController < ApplicationController
         updates[:updated_at] = Time.now
         updates[:protocols] = Array(n.protocols)
 
-        updates[:multiaddrs] = (Array(peer_values['addresses']) + Array(n.multiaddrs)).uniq
+        updates[:multiaddrs] = peer_values['addresses'] if peer_values['addresses'].present?
 
         if peer_values['agentVersion'].present? && n.agent_version != peer_values['agentVersion']
           n.agent_version = peer_values['agentVersion']
