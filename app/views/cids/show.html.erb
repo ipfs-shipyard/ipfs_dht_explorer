@@ -1,7 +1,12 @@
-<h1><%= @cid.cid %></h1>
+<h2>CID: <%= @page_title = @cid.cid %></h2>
+
+<p class='text-muted'>
+  <small>Gateway link: <%= link_to "http://gateway.ipfs.io/ipfs/#{@cid.cid}" %></small>
+</p>
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
+    <h4>Recent want requests</h4>
     <% @wants.each do |want| %>
       <% node = want.node %>
       <div class='node mb-2'>
@@ -17,5 +22,22 @@
     <% end %>
 
     <%== pagy_bootstrap_nav(@pagy) %>
+  </div>
+  <div class="col-md-6">
+    <h4>Most frequent requesters</h4>
+
+    <% @nodes.each do |node, count| %>
+
+      <div class='node mb-2'>
+        <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
+        <span class='cid'><%= link_to node.node_id, node %></span><br>
+        <small class='text-muted'>
+          <% if node.agent_version.present? %>
+            <%= node.agent_version %> -
+          <% end %>
+          <%= number_with_delimiter count %> want requests
+        </small>
+      </div>
+    <% end %>
   </div>
 </div>
