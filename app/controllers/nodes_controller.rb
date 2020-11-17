@@ -79,7 +79,8 @@ class NodesController < ApplicationController
 
     updated = Node.upsert_all(upserts, unique_by: :node_id)
     inserted = Node.upsert_all(inserts, unique_by: :node_id)
-    p inserted
+    puts "inserted #{inserted.length}/#{params["peers"].length}"
+    puts "updated #{updated.length}/#{params["peers"].length}"
     inserted.each{|node| ResolveMultiaddrsWorker.perform_async(node['id']) }
 
     head :ok
