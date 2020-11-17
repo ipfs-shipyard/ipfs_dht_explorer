@@ -15,7 +15,7 @@ services:
       - RAILS_SERVE_STATIC_FILES=true
       - RAILS_MAX_THREADS=10
       - REDIS_URL=redis://redis.service.explorer.internal
-      - IPFS_URL=ipfs.service.pinning.internal
+      - IPFS_URL=ipfs.service.explorer.internal
       - RAILS_LOG_TO_STDOUT=true
     networks:
       - internal
@@ -26,6 +26,11 @@ services:
       - 'geoipupdate_data:/usr/share/GeoIP'
     env_file:
       - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2048m"
+        max-file: "5"
 
   database.service.explorer.internal:
     image: postgres:9.6-alpine
@@ -61,23 +66,28 @@ services:
     volumes:
       - redis_data:/data
 
-  ipfs.service.pinning.internal:
-      image: ipfs/go-ipfs:latest
-      networks:
-        - internal
-      environment:
-        - IPFS_PROFILE=server
-        - IPFS_PATH=/ipfsdata
-        - IPFS_LOGGING=debug
-        - IPFS_LOGGING_FMT=nocolor
-      volumes:
-        - ./data/ipfs:/ipfsdata
-      ports:
-        - "4001:4001"
-        - "4003:4003"
-        - "8080:8080"
-        - "8081:8081"
-        - "5001:5001"
+  ipfs.service.explorer.internal:
+    image: ipfs/go-ipfs:latest
+    networks:
+      - internal
+    environment:
+      - IPFS_PROFILE=server
+      - IPFS_PATH=/ipfsdata
+      - IPFS_LOGGING=debug
+      - IPFS_LOGGING_FMT=nocolor
+    volumes:
+      - ./data/ipfs:/ipfsdata
+    ports:
+      - "4001:4001"
+      - "4003:4003"
+      - "8080:8080"
+      - "8081:8081"
+      - "5001:5001"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2048m"
+        max-file: "5"        
 
 volumes:
   pg_data:
