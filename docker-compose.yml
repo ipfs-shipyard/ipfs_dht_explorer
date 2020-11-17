@@ -16,6 +16,7 @@ services:
       - RAILS_MAX_THREADS=10
       - REDIS_URL=redis://redis.service.explorer.internal
       - IPFS_URL=ipfs.service.pinning.internal
+      - RAILS_LOG_TO_STDOUT=true
     networks:
       - internal
     depends_on:
