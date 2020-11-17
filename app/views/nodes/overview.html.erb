@@ -43,7 +43,7 @@
   <div class="col-md-4">
     <h2>Countries</h2>
     <% count = @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
-    <% d = Date.today - (@range + 1) %>
+    <% d = Date.today - (@range - 1) %>
     <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:country_name).count.reject{|k,v| k.blank?} %>
     <%= pie_chart count, legend: false  %>
 
@@ -87,7 +87,7 @@
   <div class="col-md-4">
     <h2>Minor Versions</h2>
     <% count = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.map{|k,v| ["0.#{k}.X", v]} %>
-    <% d = Date.today - (@range + 1) %>
+    <% d = Date.today - (@range - 1) %>
     <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.transform_keys{|k| "0.#{k}.X"} %>
 
     <%= pie_chart count, legend: false  %>
@@ -132,7 +132,7 @@
     <h2>Patch Versions</h2>
 
     <% count = @scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
-    <% d = Date.today - (@range + 1) %>
+    <% d = Date.today - (@range - 1) %>
     <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?} %>
 
     <%= pie_chart count, legend: false  %>
