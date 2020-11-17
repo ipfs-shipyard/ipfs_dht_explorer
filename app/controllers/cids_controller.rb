@@ -1,8 +1,10 @@
 class CidsController < ApplicationController
   def index
-    @scope = Want.group(:cid_id).count.sort_by{|k,v| -v}
+    @scope = Want.group(:cid_id).count.sort_by{|k,v| -v}.first(1000)
 
     @pagy, @cids = pagy_array(@scope)
+    cids = Cid.where(id: @cids.map(&:first))
+    @cids.map!{|k,v| [cids.detect{|c| c.id == k }, v] }
   end
 
   def show

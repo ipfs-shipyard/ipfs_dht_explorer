@@ -4,8 +4,7 @@
 
 <div class="row">
   <div class="col-md-12">
-    <% @cids.each do |cid_id,v| %>
-      <% cid = Cid.find(cid_id) %>
+    <% @cids.each do |cid,v| %>
       <div class='cid mb-2'>
         <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
         <small class='text-muted'><%= number_with_delimiter v %> wants</small>
