@@ -4,7 +4,8 @@ class NodesController < ApplicationController
 
   def overview
     @scope = Node.only_go_ipfs
-    apply_filters
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
 
     @graph = {}
     (Date.today-(@range - 1)..Date.today).map do |d|
@@ -19,7 +20,8 @@ class NodesController < ApplicationController
   def index
     @scope = Node.only_go_ipfs
 
-    apply_filters
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
 
     sort = params[:sort] || 'nodes.id'
     order = params[:order] || 'desc'
@@ -107,21 +109,24 @@ class NodesController < ApplicationController
 
   def countries
     @scope = Node.only_go_ipfs
-    apply_filters
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
     @count = @scope.count
     @pagy, @country_iso_codes = pagy_array(@scope.group(:country_iso_code).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}, items: 5)
   end
 
   def versions
     @scope = Node.only_go_ipfs
-    apply_filters
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
     @count = @scope.count
     @minor_go_ipfs_versions = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| k}
   end
 
   def secio
     @scope = Node.before_secio
-    apply_filters
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
     @patch_go_ipfs_versions = @scope.group(:patch_go_ipfs_version).count
     sort = params[:sort] || 'nodes.id'
     order = params[:order] || 'desc'
@@ -131,7 +136,8 @@ class NodesController < ApplicationController
 
   def storm
     @scope = Node.where(agent_version: 'storm')
-    apply_filters
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
     sort = params[:sort] || 'nodes.id'
     order = params[:order] || 'desc'
 
@@ -139,10 +145,10 @@ class NodesController < ApplicationController
   end
 
   def inactive
-    @scope = Node.only_go_ipfs
-    apply_filters # nodes seen in the past x days
-    @original_scope = @scope
-    @scope = @scope.where('nodes.updated_at < ?', 1.days.ago) # nodes not seen in the last day
+    @scope = Node.only_go_ipfs.where('updated_at < ?', 1.days.ago)
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
+    @original_scope = apply_filters(Node.only_go_ipfs)
 
     @graph = {}
     all_keys = @scope.group(:minor_go_ipfs_version).count.map(&:first).uniq
@@ -165,42 +171,47 @@ class NodesController < ApplicationController
 
   private
 
-  def apply_filters
+  def apply_filters(scope)
     @range = (params[:range].presence || 7).to_i
-    @scope = @scope.where('nodes.updated_at > ?', @range.days.ago)
+    scope = scope.where('nodes.updated_at > ?', @range.days.ago)
 
-    @scope = @scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
-    @scope = @scope.where("array_to_string(multiaddrs, '||') ILIKE :ip", ip: "%#{params[:ip4]}%") if params[:ip4].present?
-    @scope = @scope.where(":protocols = ANY (protocols)", protocols: params[:protocols]) if params[:protocols].present?
-    @scope = @scope.where(":domains = ANY (domains)", domains: params[:domain_name]) if params[:domain_name].present?
+    scope = scope.where(":multiaddrs = ANY (multiaddrs)", multiaddrs: params[:addr]) if params[:addr].present?
+    scope = scope.where("array_to_string(multiaddrs, '||') ILIKE :ip", ip: "%#{params[:ip4]}%") if params[:ip4].present?
+    scope = scope.where(":protocols = ANY (protocols)", protocols: params[:protocols]) if params[:protocols].present?
+    scope = scope.where(":domains = ANY (domains)", domains: params[:domain_name]) if params[:domain_name].present?
 
-    @scope = @scope.without_storm if params[:without_storm].present?
-    @scope = @scope.without_boosters if params[:without_boosters].present?
-    @scope = @scope.with_addresses if params[:with_addresses].present?
-    @scope = @scope.only_go_ipfs if params[:only_go_ipfs].present?
+    scope = scope.without_storm if params[:without_storm].present?
+    scope = scope.without_boosters if params[:without_boosters].present?
+    scope = scope.with_addresses if params[:with_addresses].present?
+    scope = scope.only_go_ipfs if params[:only_go_ipfs].present?
 
-    @scope = @scope.where(autonomous_system_organization: params[:asn]) if params[:asn].present?
-    @scope = @scope.where(country_name: params[:country_name]) if params[:country_name].present?
-    @scope = @scope.where(agent_version: params[:agent_version]) if params[:agent_version].present?
-    @scope = @scope.where(reachable: params[:reachable]) if params[:reachable].present?
-    @scope = @scope.where(city_name: params[:city_name]) if params[:city_name].present?
-    @scope = @scope.where(network: params[:network]) if params[:network].present?
-    @scope = @scope.where(minor_go_ipfs_version: params[:minor_go_ipfs_version]) if params[:minor_go_ipfs_version].present?
-    @scope = @scope.where(patch_go_ipfs_version: params[:patch_go_ipfs_version]) if params[:patch_go_ipfs_version].present?
+    scope = scope.where(autonomous_system_organization: params[:asn]) if params[:asn].present?
+    scope = scope.where(country_name: params[:country_name]) if params[:country_name].present?
+    scope = scope.where(agent_version: params[:agent_version]) if params[:agent_version].present?
+    scope = scope.where(reachable: params[:reachable]) if params[:reachable].present?
+    scope = scope.where(city_name: params[:city_name]) if params[:city_name].present?
+    scope = scope.where(network: params[:network]) if params[:network].present?
+    scope = scope.where(minor_go_ipfs_version: params[:minor_go_ipfs_version]) if params[:minor_go_ipfs_version].present?
+    scope = scope.where(patch_go_ipfs_version: params[:patch_go_ipfs_version]) if params[:patch_go_ipfs_version].present?
 
-    @scope = @scope.where.not(autonomous_system_organization: params[:exclude_asn]) if params[:exclude_asn].present?
-    @scope = @scope.where.not(country_name: params[:exclude_country_name]) if params[:exclude_country_name].present?
-    @scope = @scope.where.not(agent_version: params[:exclude_agent_version]) if params[:exclude_agent_version].present?
-    @scope = @scope.where.not(reachable: params[:exclude_reachable]) if params[:exclude_reachable].present?
-    @scope = @scope.where.not(city_name: params[:exclude_city_name]) if params[:exclude_city_name].present?
-    @scope = @scope.where.not(network: params[:exclude_network]) if params[:exclude_network].present?
-    @scope = @scope.where.not(minor_go_ipfs_version: params[:exclude_minor_go_ipfs_version]) if params[:exclude_minor_go_ipfs_version].present?
-    @scope = @scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
+    scope = scope.where.not(autonomous_system_organization: params[:exclude_asn]) if params[:exclude_asn].present?
+    scope = scope.where.not(country_name: params[:exclude_country_name]) if params[:exclude_country_name].present?
+    scope = scope.where.not(agent_version: params[:exclude_agent_version]) if params[:exclude_agent_version].present?
+    scope = scope.where.not(reachable: params[:exclude_reachable]) if params[:exclude_reachable].present?
+    scope = scope.where.not(city_name: params[:exclude_city_name]) if params[:exclude_city_name].present?
+    scope = scope.where.not(network: params[:exclude_network]) if params[:exclude_network].present?
+    scope = scope.where.not(minor_go_ipfs_version: params[:exclude_minor_go_ipfs_version]) if params[:exclude_minor_go_ipfs_version].present?
+    scope = scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
 
-    @domains = @scope.unscope(where: :domains).pluck(:domains).flatten.compact.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}
-    @autonomous_system_organizations = @scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
-    @country_names = @scope.unscope(where: :country_name).group(:country_name).count
-    @minor_go_ipfs_versions = @scope.unscope(where: :minor_go_ipfs_version).group(:minor_go_ipfs_version).count
-    @patch_go_ipfs_versions = @scope.unscope(where: :patch_go_ipfs_version).group(:patch_go_ipfs_version).count
+
+    return scope
+  end
+
+  def filter_counts(scope)
+    @domains = scope.unscope(where: :domains).pluck(:domains).flatten.compact.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}
+    @autonomous_system_organizations = scope.unscope(where: :autonomous_system_organization).group(:autonomous_system_organization).count
+    @country_names = scope.unscope(where: :country_name).group(:country_name).count
+    @minor_go_ipfs_versions = scope.unscope(where: :minor_go_ipfs_version).group(:minor_go_ipfs_version).count
+    @patch_go_ipfs_versions = scope.unscope(where: :patch_go_ipfs_version).group(:patch_go_ipfs_version).count
   end
 end
