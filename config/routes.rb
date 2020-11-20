@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
   resources :nodes do
     collection do
+      get :inactive
       get :countries
       get :versions
       get :secio

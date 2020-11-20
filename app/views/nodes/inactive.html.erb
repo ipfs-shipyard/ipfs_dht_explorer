@@ -1,0 +1,149 @@
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Inactive' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %> (<%= (@scope.count.to_f/@original_scope.count*100).round(1) %>%) </small>
+  </span>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'minor_go_ipfs_version', filter_label: 'Minor', filter_collection: @minor_go_ipfs_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'patch_go_ipfs_version', filter_label: 'Patch', filter_collection: @patch_go_ipfs_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'domain_name', filter_label: 'Domain', filter_collection: @domains} %>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= 'active' if (params[:without_boosters].present? || params[:without_storm].present? || params[:with_addresses].present? || params[:only_go_ipfs].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Extras</a>
+        <div class="dropdown-menu">
+          <% if params[:with_addresses].present? %>
+            <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, with_addresses: nil)) %>">
+              With Addresses
+            </a>
+          <% else %>
+            <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, with_addresses: 'true')) %>">
+              With Addresses
+            </a>
+          <% end %>
+        </div>
+      </li>
+
+      <%= render 'range_filter' %>
+    </ul>
+    <ul class="nav nav-pills ml-auto">
+      <%= render 'sort_filter' %>
+    </ul>
+  </div>
+</nav>
+
+<div class="row">
+  <%= line_chart @graph %>
+</div>
+
+<% max_rows = 6 %>
+
+<div class="row">
+  <div class="col-md-4">
+    <% count = @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
+    <% previous_count = @original_scope.group(:country_name).count.reject{|k,v| k.blank?} %>
+
+    <table class='table table-sm' >
+      <% total = count.sum{|k,v| v} %>
+      <% previous_total = previous_count.sum{|k,v| v} %>
+
+      <tr>
+        <th>Country</th>
+        <th>#</th>
+        <th class='text-right'>% Inactive</th>
+        <th class='text-right'>% Total</th>
+      </tr>
+
+      <% count.first(max_rows).each do |k,v| %>
+        <tr>
+          <td class='align-middle'>
+            <%= k %>
+          </td>
+          <td class='align-middle'>
+            <%= number_with_delimiter v %>
+          </td>
+          <td class='text-right'>
+            <%= (v.to_f/total*100).round(1) %>%
+          </td>
+          <td class='text-right'>
+            <%= (v.to_f/previous_total*100).round(1) %>%
+          </td>
+        </tr>
+      <% end %>
+    </table>
+
+  </div>
+  <div class="col-md-4">
+    <% count = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.map{|k,v| ["0.#{k}.X", v]} %>
+    <% previous_count = @original_scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.transform_keys{|k| "0.#{k}.X"} %>
+
+    <table class='table table-sm'>
+      <% total = count.sum{|k,v| v} %>
+      <% previous_total = previous_count.sum{|k,v| v} %>
+
+      <tr>
+        <th>Minor Version</th>
+        <th>#</th>
+        <th class='text-right'>% Inactive</th>
+        <th class='text-right'>% Total</th>
+      </tr>
+
+      <% count.first(max_rows).each do |k,v| %>
+        <tr>
+          <td>
+            <%= k %>
+          </td>
+          <td>
+            <%= number_with_delimiter v %>
+          </td>
+          <td class='text-right'>
+            <%= (v.to_f/total*100).round(1) %>%
+          </td>
+          <td class='text-right'>
+            <%= percentage = (v.to_f/previous_total*100).round(1) %>%
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <div class="col-md-4">
+    <% count = @scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
+    <% previous_count = @original_scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?} %>
+
+    <table class='table table-sm'>
+      <% total = count.sum{|k,v| v} %>
+      <% previous_total = previous_count.sum{|k,v| v} %>
+
+      <tr>
+        <th>Patch Version</th>
+        <th>#</th>
+        <th class='text-right'>% Inactive</th>
+        <th class='text-right'>% Total</th>
+      </tr>
+
+      <% count.first(max_rows).each do |k,v| %>
+        <tr>
+          <td>
+            <%= k %>
+          </td>
+          <td>
+            <%= number_with_delimiter v %>
+          </td>
+          <td class='text-right'>
+            <%= (v.to_f/total*100).round(1) %>%
+          </td>
+          <td class='text-right'>
+            <%= percentage = (v.to_f/previous_total*100).round(1) %>%
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<p>
+  <small class='text-muted'>Go-ipfs nodes seen in past <%= @range %> days, not seen in the last 24 hours, ignoring storm and booster nodes</small>
+</p>

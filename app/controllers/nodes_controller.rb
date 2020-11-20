@@ -138,6 +138,33 @@ class NodesController < ApplicationController
     @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
+  def inactive
+    @scope = Node.only_go_ipfs
+    apply_filters # nodes seen in the past x days
+    @original_scope = @scope
+    @scope = @scope.where('nodes.updated_at < ?', 1.days.ago) # nodes not seen in the last day
+
+    @graph = {}
+    all_keys = @scope.group(:minor_go_ipfs_version).count.map(&:first).uniq
+    (Date.today-(@range - 1)..Date.today).map do |d|
+      count = @scope.where('updated_at <= ?', d).where('created_at <= ?', d).group(:minor_go_ipfs_version).count
+
+      count.each do |k,v|
+        key = ["0.#{k}.X", d]
+        @graph[key] = v
+      end
+
+      missing_keys = all_keys - count.map(&:first)
+
+      missing_keys.each do |k|
+        key = ["0.#{k}.X", d]
+        @graph[key] = 0
+      end
+    end
+  end
+
+  private
+
   def apply_filters
     @range = (params[:range].presence || 7).to_i
     @scope = @scope.where('nodes.updated_at > ?', @range.days.ago)
