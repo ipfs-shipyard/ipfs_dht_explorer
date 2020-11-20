@@ -31,3 +31,9 @@ To access the rails console:
 ```
 docker-compose exec app rails console
 ```
+
+Export the postgres database
+
+```
+docker exec -u postgres ipfs_dht_explorer_database.service.explorer.internal_1 pg_dump -Fc postgres > db.dump
+```
