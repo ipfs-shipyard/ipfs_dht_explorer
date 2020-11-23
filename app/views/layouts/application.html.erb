@@ -32,35 +32,46 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <% if logged_in? %>
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item">
-                <a class="nav-link" href='<%= nodes_path %>'>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle " href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Nodes
                 </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href='<%= nodes_path %>'>
+                    Recently seen
+                  </a>
+                  <a class="dropdown-item" href='<%= countries_nodes_path %>'>
+                    Countries
+                  </a>
+                  <a class="dropdown-item" href='<%= versions_nodes_path %>'>
+                    Versions
+                  </a>
+                  <a class="dropdown-item" href='<%= secio_nodes_path %>'>
+                    Secio
+                  </a>
+                  <a class="dropdown-item" href='<%= inactive_nodes_path %>'>
+                    Inactive
+                  </a>
+                  <a class="dropdown-item" href='<%= storm_nodes_path %>'>
+                    Storm
+                  </a>
+                </div>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href='<%= countries_nodes_path %>'>
-                  Countries
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle " href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  CIDs
                 </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href='<%= versions_nodes_path %>'>
-                  Versions
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href='<%= storm_nodes_path %>'>
-                  Storm
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href='<%= secio_nodes_path %>'>
-                  Secio
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href='<%= inactive_nodes_path %>'>
-                  Inactive
-                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="<%= cids_path %>">
+                    Most Wanted
+                  </a>
+                  <a class="dropdown-item" href="<%= recent_cids_path %>">
+                    Recent Wants
+                  </a>
+                  <a class="dropdown-item" href="<%= wants_cids_path %>">
+                    Biggest Wanters
+                  </a>
+                </div>
               </li>
             </ul>
 
