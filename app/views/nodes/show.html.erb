@@ -73,17 +73,19 @@
 </ul>
 
 <% if @wants.any? %>
-  <h4>Wants</h4>
-  <p><small class='text-muted'>
-    <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique cids
-  </small></p>
+  <h4>
+    Wants
+    <small class='text-muted'>
+      <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique cids
+    </small>
+  </h4>
   <div class="row">
     <div class="col-md-12">
       <% @wants.each do |want| %>
         <div class='want mb-2'>
-          <span class='cid'><%= link_to want.cid.cid, cid_path(want.cid.cid) %></span><br>
+          <span class='cid'><%= link_to want.cid.cid, cid_path(want.cid.cid) %></span>
           <small class='text-muted'>
-            <%= want.created_at %>
+            <%= distance_of_time_in_words_to_now want.created_at %> ago
           </small>
         </div>
       <% end %>

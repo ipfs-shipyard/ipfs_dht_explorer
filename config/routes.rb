@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :cids do
     collection do
       get :wants
+      get :recent
     end
   end
 

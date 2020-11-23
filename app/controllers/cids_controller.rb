@@ -7,6 +7,12 @@ class CidsController < ApplicationController
     @cids.map!{|k,v| [cids.detect{|c| c.id == k }, v] }
   end
 
+  def recent
+    @scope = Want.includes(:cid,:node).order('created_at DESC')
+
+    @pagy, @wants = pagy(@scope)
+  end
+
   def show
     @cid = Cid.find_by_cid!(params[:id])
 
