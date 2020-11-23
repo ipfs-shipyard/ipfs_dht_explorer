@@ -1,5 +1,5 @@
 class Node < ApplicationRecord
-  has_many :wants
+  has_many :wants, dependent: :delete_all
 
   has_many :source_edges, class_name: 'Edge', foreign_key: :source_id
   has_many :source_peers, through: :source_edges, class_name: 'Node'
