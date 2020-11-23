@@ -16,7 +16,7 @@
 
 <h4>IPs</h4>
 <ul>
-  <% @node.ip4_addresses.sort.each do |addr| %>
+  <% @node.ip4_addresses.first(20).sort.each do |addr| %>
     <li>
       <%= link_to addr, nodes_path(ip4: addr) %>
       <% if domain = Node.domain_lookup(addr) %>
@@ -24,7 +24,7 @@
       <% end %>
     </li>
   <% end %>
-  <% @node.ip6_addresses.sort.each do |addr| %>
+  <% @node.ip6_addresses.first(20).sort.each do |addr| %>
     <li>
       <%= link_to addr, nodes_path(ip6: addr) %>
       <% if domain = Node.domain_lookup(addr) %>
@@ -49,7 +49,7 @@
 <h4>MultiAddrs</h4>
 <ul>
   <% if @node.multiaddrs.any? %>
-    <% @node.multiaddrs.each do |addr| %>
+    <% @node.multiaddrs.first(20).each do |addr| %>
       <li>
         <%= link_to addr, nodes_path(addr: addr) %>
       </li>
@@ -76,7 +76,8 @@
   <h4>
     Wants
     <small class='text-muted'>
-      <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique cids
+      <%= number_with_delimiter @node.wants.where('created_at > ?', 7.days.ago).count %> wants in the past 7 days -
+      <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique CIDs total
     </small>
   </h4>
   <div class="row">
