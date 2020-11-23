@@ -102,7 +102,7 @@ class NodesController < ApplicationController
 
   def show
     @node = Node.find_by_node_id!(params[:id])
-    @scope = @node.wants.includes(:cid)
+    @scope = @node.wants.includes(:cid).order('created_at DESC')
 
     @pagy, @wants = pagy(@scope)
   end
