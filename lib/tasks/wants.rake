@@ -36,7 +36,7 @@ namespace :wants do
         next
       end
       v = v.sort.uniq
-      cids = Cid.where(cid: v.map(&:first).uniq).select('id, cid')
+      cids = Cid.where(cid: v.map(&:first).uniq.compact).select('id, cid')
 
       cid_map = {}
       cids.each do |cid|
