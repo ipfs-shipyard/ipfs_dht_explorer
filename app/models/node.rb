@@ -152,8 +152,12 @@ class Node < ApplicationRecord
 
   def public_multi_addrs
     multiaddrs.select do |a|
-      ip = IPAddr.new(a.split('/')[2])
-      !ip.loopback? && !ip.private? && !ip.link_local?
+      begin
+        ip = IPAddr.new(a.split('/')[2])
+        !ip.loopback? && !ip.private? && !ip.link_local?
+      rescue IPAddr::InvalidAddressError
+        false
+      end
     end
   end
 
