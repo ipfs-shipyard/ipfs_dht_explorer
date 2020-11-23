@@ -9,8 +9,11 @@ namespace :wants do
     FileUtils.cp("#{data_path}/want-logs.txt", "#{data_path}/want-logs.txt.next")
     File.truncate("#{data_path}/want-logs.txt", 5)
 
+    wc_output = `wc -l #{data_path}/want-logs.txt.next`.to_i
+
     File.open("#{data_path}/want-logs.txt.next", "r") do |f|
       f.each_line.with_index do |line,i|
+        next if i == wc_output # skip last line of file
         if line.match?(' wants ')
           parts = line.split(' ')
           peers[parts[6]] << [parts[8], parts[2]]
