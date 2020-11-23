@@ -51,7 +51,7 @@ class Node < ApplicationRecord
   end
 
   def ipfs_connect
-    addrs = public_multi_addrs.map{|origin| "#{origin}/p2p/#{node_id}" }
+    addrs = public_multi_addrs.first(10).map{|origin| "#{origin}/p2p/#{node_id}" }
     addrs += ["/p2p/#{node_id}"]
     addrs.each do |addr|
       begin
