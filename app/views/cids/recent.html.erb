@@ -1,6 +1,9 @@
-<h1>
-  Recently Wanted CID
-</h1>
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Recently Wanted CID' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+  </span>
+</nav>
 
 <div class="row">
   <div class="col-md-12">

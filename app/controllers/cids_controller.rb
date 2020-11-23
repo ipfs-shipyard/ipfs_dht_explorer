@@ -1,6 +1,7 @@
 class CidsController < ApplicationController
   def index
-    @scope = Want.group(:cid_id).count.sort_by{|k,v| -v}.first(1000)
+    @range = (params[:range].presence || 7).to_i
+    @scope = Want.where('created_at > ?', @range.days.ago).group(:cid_id).count.sort_by{|k,v| -v}
 
     @pagy, @cids = pagy_array(@scope)
     cids = Cid.where(id: @cids.map(&:first))
@@ -8,7 +9,8 @@ class CidsController < ApplicationController
   end
 
   def recent
-    @scope = Want.includes(:cid,:node).order('created_at DESC')
+    @range = (params[:range].presence || 7).to_i
+    @scope = Want.where('created_at > ?', @range.days.ago).includes(:cid,:node).order('created_at DESC')
 
     @pagy, @wants = pagy(@scope)
   end
@@ -24,7 +26,8 @@ class CidsController < ApplicationController
   end
 
   def wants
-    @scope = Want.group(:node_id).count.sort_by{|k,v| -v}
+    @range = (params[:range].presence || 7).to_i
+    @scope = Want.group(:node_id).where('created_at > ?', @range.days.ago).count.sort_by{|k,v| -v}
 
     @pagy, @nodes = pagy_array(@scope)
   end

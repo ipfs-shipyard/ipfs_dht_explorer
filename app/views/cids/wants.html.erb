@@ -1,8 +1,9 @@
-<h1>
-  Nodes with most Wants
-</h1>
-
-<p><small class='text-muted'><%== pagy_info @pagy %></small></p>
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Nodes with most Wants' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+  </span>
+</nav>
 
 <div class="row">
   <div class="col-md-12">
