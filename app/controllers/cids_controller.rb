@@ -20,7 +20,7 @@ class CidsController < ApplicationController
 
     @scope = @cid.wants.includes(:node)
 
-    @nodes = @cid.wants.group(:node_id).count.sort_by{|k,v| -v}.first(20).map{|k,v| [Node.find(k), v] }
+    @nodes = @cid.wants.group(:node_id).count.sort_by{|k,v| -v}.first(30).map{|k,v| [Node.find(k), v] }
 
     @pagy, @wants = pagy(@scope)
   end
