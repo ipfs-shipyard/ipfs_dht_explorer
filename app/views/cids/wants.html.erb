@@ -1,19 +1,18 @@
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
     <strong><%= @page_title = 'Nodes with most Wants' %></strong>
-    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+    <small class='text-muted'><%= number_with_delimiter @pagy.count %></small>
   </span>
 </nav>
 
 <div class="row">
   <div class="col-md-12">
-    <% @nodes.each do |node_id,v| %>
-      <% node = Node.find(node_id) %>
+    <% @nodes.each do |node| %>
 
       <div class='node mb-2'>
         <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
         <span class='cid'><%= link_to node.node_id, node %></span>
-        <small class='text-muted'><%= number_with_delimiter v %> wants</small>
+        <small class='text-muted'><%= number_with_delimiter node.wants_count %> wants</small>
         <br>
         <small class='text-muted'>
           <% if node.main_ip.present? %>

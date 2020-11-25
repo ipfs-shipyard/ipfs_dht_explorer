@@ -1,16 +1,16 @@
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
     <strong><%= @page_title = 'Most Wanted CIDs' %></strong>
-    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+    <small class='text-muted'><%= number_with_delimiter @pagy.count %></small>
   </span>
 </nav>
 
 <div class="row">
   <div class="col-md-12">
-    <% @cids.each do |cid,v| %>
+    <% @cids.each do |cid| %>
       <div class='cid mb-2'>
         <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
-        <small class='text-muted'><%= number_with_delimiter v %> wants</small>
+        <small class='text-muted'><%= number_with_delimiter cid.wants_count %> wants</small>
       </div>
 
     <% end %>

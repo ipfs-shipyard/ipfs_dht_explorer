@@ -1,7 +1,7 @@
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
     <strong><%= @page_title = 'Recently Wanted CID' %></strong>
-    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+    <small class='text-muted'><%= number_with_delimiter @pagy.count %> wants in the past <%= @range %> days</small>
   </span>
 </nav>
 
