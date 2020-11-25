@@ -45,8 +45,11 @@ namespace :wants do
 
       v.each_slice(1000) do |cid_ids|
         want_data = cid_ids.map{|cid_id, datetime| {node_id: node.id, cid_id: cid_map[cid_id], created_at: datetime } }
-        upserted = Want.upsert_all(want_data, returning: false) if want_data.any?
-        upserted.length
+        begin
+          upserted = Want.upsert_all(want_data, returning: false) if want_data.any?
+        rescue ActiveRecord::NotNullViolation
+          # invalid log data
+        end
       end
     end
 
