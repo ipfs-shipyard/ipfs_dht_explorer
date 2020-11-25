@@ -2,7 +2,7 @@ class CidsController < ApplicationController
   def index
     @scope = Cid.order('wants_count DESC')
 
-    @pagy, @cids = pagy_array(@scope)
+    @pagy, @cids = pagy(@scope)
   end
 
   def recent
@@ -24,6 +24,6 @@ class CidsController < ApplicationController
 
   def wants
     @scope = Node.order('wants_count DESC')
-    @pagy, @nodes = pagy_array(@scope)
+    @pagy, @nodes = pagy(@scope)
   end
 end
