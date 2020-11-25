@@ -27,19 +27,23 @@ namespace :wants do
     ids = Cid.upsert_all(data, unique_by: :cid) if data.any?
     puts ids.length
 
+    node_ids = []
+    cid_ids = []
+
     peers.each do |k,v|
       next if k.blank?
       node = Node.find_by_node_id(k)
       if node.nil?
         puts "missing node: #{k}"
         node = Node.create(node_id: k)
-        next
       end
+      node_ids << node.id
       v = v.sort.uniq
       cids = Cid.where(cid: v.map(&:first).uniq.compact).select('id, cid')
 
       cid_map = {}
       cids.each do |cid|
+        cid_ids << cid.id
         cid_map[cid.cid] = cid.id
       end
 
@@ -51,6 +55,25 @@ namespace :wants do
           # invalid log data
         end
       end
+    end
+    # update wants_count on nodes
+    node_counts = Want.where(node_id: node_ids).group(:node_id).count
+    node_counts.each_slice(1000) do |counts|
+      update_sql = ''
+      counts.each do |node_count|
+        update_sql += "UPDATE nodes SET wants_count = #{node_count[1]} WHERE id = #{node_count[0]};"
+      end
+      ActiveRecord::Base.connection.execute(update_sql)
+    end
+
+    # update wants_count on cids
+    cid_counts = Want.where(cid_id: cid_ids.uniq).group(:cid_id).count
+    cid_counts.each_slice(1000) do |counts|
+      update_sql = ''
+      counts.each do |cid_count|
+        update_sql += "UPDATE cids SET wants_count = #{cid_count[1]} WHERE id = #{cid_count[0]};"
+      end
+      ActiveRecord::Base.connection.execute(update_sql)
     end
 
     FileUtils.rm ("#{data_path}/want-logs.txt.next")

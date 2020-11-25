@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_16_115751) do
+ActiveRecord::Schema.define(version: 2020_11_25_131235) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2020_11_16_115751) do
 
   create_table "cids", force: :cascade do |t|
     t.string "cid"
+    t.integer "wants_count", default: 0
     t.index ["cid"], name: "index_cids_on_cid", unique: true
   end
 
@@ -31,7 +32,7 @@ ActiveRecord::Schema.define(version: 2020_11_16_115751) do
 
   create_table "nodes", force: :cascade do |t|
     t.string "node_id"
-    t.string "multiaddrs", array: true
+    t.string "multiaddrs", default: [], array: true
     t.boolean "reachable"
     t.string "agent_version"
     t.datetime "created_at", precision: 6, null: false
@@ -53,6 +54,7 @@ ActiveRecord::Schema.define(version: 2020_11_16_115751) do
     t.string "patch_go_ipfs_version"
     t.string "domains", default: [], array: true
     t.integer "sightings", default: 0
+    t.integer "wants_count", default: 0
     t.index ["agent_version"], name: "index_nodes_on_agent_version"
     t.index ["country_iso_code"], name: "index_nodes_on_country_iso_code"
     t.index ["minor_go_ipfs_version"], name: "index_nodes_on_minor_go_ipfs_version"
