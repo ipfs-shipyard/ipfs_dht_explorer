@@ -1,6 +1,6 @@
 class CidsController < ApplicationController
   def index
-    @scope = Cid.order('wants_count DESC')
+    @scope = Cid.order('wants_count DESC').where('wants_count > 0')
 
     @pagy, @cids = pagy(@scope)
   end
@@ -23,7 +23,7 @@ class CidsController < ApplicationController
   end
 
   def wants
-    @scope = Node.order('wants_count DESC')
+    @scope = Node.order('wants_count DESC').where('wants_count > 0')
     @pagy, @nodes = pagy(@scope)
   end
 end
