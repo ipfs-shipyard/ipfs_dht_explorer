@@ -76,8 +76,7 @@
   <h4>
     Wants
     <small class='text-muted'>
-      <%= number_with_delimiter @node.wants.where('created_at > ?', 7.days.ago).count %> wants in the past 7 days -
-      <%= number_with_delimiter @node.wants.group(:cid_id).count.length %> unique CIDs total
+      <%= number_with_delimiter @node.wants_count %> wants
     </small>
   </h4>
   <div class="row">
