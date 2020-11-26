@@ -13,6 +13,7 @@
       <%= node.agent_version %> -
     <% end %>
     Seen <%= pluralize number_with_delimiter(node.sightings.zero? ? 1 : node.sightings), 'times' %> -
+    <%= pluralize number_with_delimiter(node.wants_count), 'wants' %> -
     Last seen <%= distance_of_time_in_words_to_now node.updated_at %> ago
   </small>
 </div>
