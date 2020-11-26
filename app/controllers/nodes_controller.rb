@@ -169,6 +169,18 @@ class NodesController < ApplicationController
     end
   end
 
+  def pl
+    @scope = Node.where(pl: true)
+
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
+
+    sort = params[:sort] || 'nodes.id'
+    order = params[:order] || 'desc'
+
+    @pagy, @nodes = pagy(@scope.order(sort => order))
+  end
+
   private
 
   def apply_filters(scope)

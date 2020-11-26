@@ -1,3 +1,5 @@
+require 'csv'
+
 class Node < ApplicationRecord
   has_many :wants, dependent: :delete_all
 
@@ -304,5 +306,13 @@ class Node < ApplicationRecord
     Node.update_peers_counts
     Node.update_location_details
     Node.update_minor_go_ipfs_version
+  end
+
+  def self.mark_pl_nodes
+    csv = CSV.read('data/pl_nodes.csv', headers: true)
+    csv.each do |row|
+      node = Node.find_or_create_by(node_id: row['peer_id'])
+      node.update(pl: true)
+    end
   end
 end

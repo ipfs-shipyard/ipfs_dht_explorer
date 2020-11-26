@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get :versions
       get :secio
       get :storm
+      get :pl
       post :report
     end
   end

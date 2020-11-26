@@ -1,6 +1,10 @@
 <div class='node mb-2'>
   <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
-  <span class='cid'><%= link_to node.node_id, node %></span><br>
+  <span class='cid'><%= link_to node.node_id, node %></span>
+  <% if node.pl? %>
+    <small class='text-muted'>PL</small>
+  <% end %>
+  <br>
   <small class='text-muted'>
     <% if node.main_ip.present? %>
       <%= node.main_ip %> -
