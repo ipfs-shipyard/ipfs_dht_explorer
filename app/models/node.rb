@@ -311,6 +311,7 @@ class Node < ApplicationRecord
   def self.mark_pl_nodes
     csv = CSV.read('/data/pl_nodes.csv', headers: true)
     csv.each do |row|
+      next if row['peer_id'].blank?
       node = Node.find_or_create_by(node_id: row['peer_id'])
       node.update(pl: true)
     end
