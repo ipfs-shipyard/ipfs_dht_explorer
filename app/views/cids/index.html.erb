@@ -3,14 +3,30 @@
     <strong><%= @page_title = 'Most Wanted CIDs' %></strong>
     <small class='text-muted'><%= number_with_delimiter @pagy.count %></small>
   </span>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+      <%= render partial: 'nodes/excludable_filter', locals: {filter_name: 'content_type', filter_label: 'Content Type', filter_collection: @content_types} %>
+    </ul>
+  </div>
+
 </nav>
+
 
 <div class="row">
   <div class="col-md-12">
     <% @cids.each do |cid| %>
       <div class='cid mb-2'>
         <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
-        <small class='text-muted'><%= number_with_delimiter cid.wants_count %> wants</small>
+        <small class='text-muted'>
+          <%= number_with_delimiter cid.wants_count %> wants
+          <% if cid.content_type.present? %>
+              - <%= cid.content_type %>
+              <% if cid.content_length.present? %>
+                - <%= number_to_human_size cid.content_length %>
+              <% end %>
+          <% end %>
+        </small>
+
       </div>
 
     <% end %>

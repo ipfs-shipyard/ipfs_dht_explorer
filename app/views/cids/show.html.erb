@@ -3,7 +3,16 @@
 </h1>
 
 <p class='text-muted'>
-  <small>Gateway link: <%= link_to "gateway.ipfs.io/ipfs/#{@cid.cid}", "http://gateway.ipfs.io/ipfs/#{@cid.cid}", target: :_blank %></small>
+  <small>
+    Gateway link: <%= link_to "gateway.ipfs.io/ipfs/#{@cid.cid}", "http://gateway.ipfs.io/ipfs/#{@cid.cid}", target: :_blank %>
+    <% if @cid.content_type.present? %>
+      <br>Content Type: <%= @cid.content_type %>
+      <% if @cid.content_length.present? %>
+        <br>
+        Content Type: <%= number_to_human_size @cid.content_length %>
+      <% end %>
+    <% end %>
+  </small>
 </p>
 
 <div class="row">

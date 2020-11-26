@@ -16,6 +16,13 @@
             wanted by
             <span class=''><%= link_to want.node.node_id, want.node %></span>
             <%= distance_of_time_in_words_to_now want.created_at %> ago
+            <% if want.cid.content_type.present? %>
+              <br>
+                <%= want.cid.content_type %>
+                <% if want.cid.content_length.present? %>
+                  - <%= number_to_human_size want.cid.content_length %>
+                <% end %>
+            <% end %>
           </small>
         </p>
       </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_26_130242) do
+ActiveRecord::Schema.define(version: 2020_11_26_164756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 2020_11_26_130242) do
   create_table "cids", force: :cascade do |t|
     t.string "cid"
     t.integer "wants_count", default: 0
+    t.string "content_type"
+    t.bigint "content_length"
     t.index ["cid"], name: "index_cids_on_cid", unique: true
   end
 
