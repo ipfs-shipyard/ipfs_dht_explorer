@@ -6,6 +6,10 @@
 </nav>
 
 <div class="row">
+  <%= column_chart @scope.group(:wants_count).sum(:wants_count) %>
+</div>
+
+<div class="row">
   <div class="col-md-12">
     <% @cids.each do |cid| %>
       <div class='cid mb-2'>
