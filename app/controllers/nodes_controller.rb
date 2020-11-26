@@ -196,6 +196,7 @@ class NodesController < ApplicationController
     scope = scope.without_boosters if params[:without_boosters].present?
     scope = scope.with_addresses if params[:with_addresses].present?
     scope = scope.only_go_ipfs if params[:only_go_ipfs].present?
+    scope = scope.where(pl: params[:pl]) if params[:pl].present?
 
     scope = scope.where(autonomous_system_organization: params[:asn]) if params[:asn].present?
     scope = scope.where(country_name: params[:country_name]) if params[:country_name].present?
@@ -214,7 +215,6 @@ class NodesController < ApplicationController
     scope = scope.where.not(network: params[:exclude_network]) if params[:exclude_network].present?
     scope = scope.where.not(minor_go_ipfs_version: params[:exclude_minor_go_ipfs_version]) if params[:exclude_minor_go_ipfs_version].present?
     scope = scope.where.not(patch_go_ipfs_version: params[:exclude_patch_go_ipfs_version]) if params[:exclude_patch_go_ipfs_version].present?
-
 
     return scope
   end

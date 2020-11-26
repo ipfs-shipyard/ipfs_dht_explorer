@@ -10,5 +10,23 @@
         With Addresses
       </a>
     <% end %>
+    <% if params[:pl].present? && params[:pl] == 'true' %>
+      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, pl: nil)) %>">
+        Only PL
+      </a>
+    <% else %>
+      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, pl: 'true')) %>">
+        Only PL
+      </a>
+    <% end %>
+    <% if params[:pl].present? && params[:pl] == 'false' %>
+      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, pl: nil)) %>">
+        Exclude PL
+      </a>
+    <% else %>
+      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, pl: 'false')) %>">
+        Exclude PL
+      </a>
+    <% end %>
   </div>
 </li>
