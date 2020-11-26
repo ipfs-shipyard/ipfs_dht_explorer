@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       get :secio
       get :storm
       get :pl
+      get :wants
       post :report
     end
   end

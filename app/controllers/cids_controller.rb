@@ -27,7 +27,6 @@ class CidsController < ApplicationController
   end
 
   def wants
-    @scope = Node.order('wants_count DESC').where('wants_count > 0')
-    @pagy, @nodes = pagy(@scope)
+    redirect_to wants_nodes_path
   end
 end
