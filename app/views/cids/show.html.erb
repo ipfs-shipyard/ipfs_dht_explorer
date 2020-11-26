@@ -32,7 +32,11 @@
 
       <div class='node mb-2'>
         <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
-        <span class='cid'><%= link_to node.node_id, node %></span><br>
+        <span class='cid'><%= link_to node.node_id, node %>
+          <% if node.pl? %>
+            <small class='text-muted'>PL</small>
+          <% end %>
+        </span><br>
         <small class='text-muted'>
           <% if node.agent_version.present? %>
             <%= node.agent_version %> -
