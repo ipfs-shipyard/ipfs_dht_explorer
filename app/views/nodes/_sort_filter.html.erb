@@ -55,5 +55,24 @@
         Least sightings
       </a>
     <% end %>
+
+    <% if params[:sort] == 'wants_count' && params[:order] == 'asc' %>
+      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, sort: nil, order: nil)) %>">
+        Most wants
+      </a>
+    <% else %>
+      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, sort: 'wants_count', order: 'desc')) %>">
+        Most wants
+      </a>
+    <% end %>
+    <% if params[:sort] == 'wants_count' && params[:order] == 'asc' %>
+      <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, sort: nil, order: nil)) %>">
+        Least wants
+      </a>
+    <% else %>
+      <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, sort: 'wants_count', order: 'asc')) %>">
+        Least wants
+      </a>
+    <% end %>
   </div>
 </li>
