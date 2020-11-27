@@ -19,9 +19,10 @@ class CidsController < ApplicationController
   def show
     @cid = Cid.find_by_cid!(params[:id])
 
-    @scope = @cid.wants.includes(:node)
+    @range = (params[:range].presence || 7).to_i
+    @scope = @cid.wants.includes(:node).where('created_at > ?', @range.days.ago)
 
-    @nodes = @cid.wants.group(:node_id).count.sort_by{|k,v| -v}.first(30).map{|k,v| [Node.find(k), v] }
+    @nodes = @cid.nodes.group_by(&:id).map{|k,v| [v.first, v.length]}
 
     @pagy, @wants = pagy(@scope)
   end

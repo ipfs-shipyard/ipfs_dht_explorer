@@ -1,5 +1,6 @@
 class Cid < ApplicationRecord
   has_many :wants, dependent: :delete_all
+  has_many :nodes, through: :wants
 
   IPFS_GATEWAY_HOST = "http://#{ENV.fetch("IPFS_URL") { '127.0.0.1' }}:#{ENV.fetch("IPFS_GATEWAY_PORT") { '8080' }}"
 

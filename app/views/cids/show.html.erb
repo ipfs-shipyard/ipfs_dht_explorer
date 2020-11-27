@@ -17,7 +17,15 @@
 
 <div class="row">
   <div class="col-md-6">
-    <h4>Recent want requests</h4>
+    <h4>
+      Recent want requests
+      <small class='text-muted'>
+        <%= number_with_delimiter @cid.wants_count %> wants
+      </small>
+    </h4>
+
+    <%= line_chart @scope.group_by_hour(:created_at).count, colors: ['#bbb'], height: "200px", library: { scales: { yAxes: [{ display: false }], xAxes: [{ display: false }] }}, points: false %>
+
     <% @wants.each do |want| %>
       <% node = want.node %>
       <div class='node mb-2'>
@@ -35,9 +43,24 @@
     <%== pagy_bootstrap_nav(@pagy) %>
   </div>
   <div class="col-md-6">
-    <h4>Most frequent requesters</h4>
 
-    <% @nodes.each do |node, count| %>
+    <h4>
+      Most frequent requesters
+      <small class='text-muted'>
+        <%= number_with_delimiter @nodes.length %> nodes
+      </small>
+    </h4>
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= pie_chart @nodes.map{|a| a.first.agent_version || 'Unknown' }.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}, legend: false, height: "200px" %>
+      </div>
+      <div class="col-md-6">
+        <%= pie_chart @nodes.map{|a| a.first.country_name || 'Unknown' }.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}, legend: false, height: "200px" %>
+      </div>
+    </div>
+
+    <% @nodes.first(30).each do |node, count| %>
 
       <div class='node mb-2'>
         <span title='<%= node.country_name %>'><%= flag_icon(node.country_iso_code, squared: true) %></span>
