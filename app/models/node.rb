@@ -72,6 +72,20 @@ class Node < ApplicationRecord
     end
   end
 
+  def manual_crawl
+    if ipfs_connect
+      json = ipfs_id
+      updates = {
+        multiaddrs: json['Addresses'].map{|a| a.split('/p2p/').first}.sort,
+        protocols: json['Protocols'].sort,
+        agent_version: json['AgentVersion'],
+        sightings: sightings + 1
+      }
+      update(updates)
+      update_location_details
+    end
+  end
+
   def geo_details
     return nil unless main_ip
     @geo_details ||= begin
