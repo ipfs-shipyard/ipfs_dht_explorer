@@ -24,8 +24,10 @@ namespace :wants do
 
     data = cids.uniq.map{|id, datetime| {cid: id} }
 
-    ids = Cid.upsert_all(data, unique_by: :cid) if data.any?
-    puts ids.length
+    if data.any?
+      ids = Cid.upsert_all(data, unique_by: :cid)
+      puts ids.length
+    end
 
     node_ids = []
     cid_ids = []
