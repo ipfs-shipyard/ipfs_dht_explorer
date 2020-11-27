@@ -23,7 +23,7 @@ class NodesController < ApplicationController
     @scope = apply_filters(@scope)
     filter_counts(@scope)
 
-    sort = params[:sort] || 'nodes.id'
+    sort = params[:sort] || 'nodes.updated_at'
     order = params[:order] || 'desc'
 
     @pagy, @nodes = pagy(@scope.order(sort => order))
