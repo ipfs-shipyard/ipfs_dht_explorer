@@ -36,6 +36,7 @@ namespace :wants do
       if node.nil?
         puts "missing node: #{k}"
         node = Node.create(node_id: k)
+        ManualCrawlWorker.perform_async(node.id)
       end
       node_ids << node.id
       v = v.sort.uniq
