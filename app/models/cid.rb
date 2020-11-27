@@ -11,7 +11,7 @@ class Cid < ApplicationRecord
   def detect_content_type
     return if cid.blank?
     begin
-      resp = HTTP.timeout(5).head("#{IPFS_GATEWAY_HOST}/ipfs/#{cid}")
+      resp = HTTP.timeout(2).head("#{IPFS_GATEWAY_HOST}/ipfs/#{cid}")
       update(content_type: resp.headers["Content-Type"], content_length: resp.headers["Content-Length"])
     rescue HTTP::TimeoutError, HTTP::ConnectionError => e
       # failed to find
