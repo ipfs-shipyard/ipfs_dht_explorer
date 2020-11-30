@@ -2,20 +2,17 @@
 
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
-    <strong><%= @page_title = 'Most Wants by Country' %></strong>
+    <strong><%= @page_title = 'Most Wants by Version' %></strong>
     <small class='text-muted'><%= number_with_delimiter total_count %></small>
   </span>
 </nav>
 
-<% @scope.each do |country_iso_code, nodes| %>
+<% @scope.each do |minor_go_ipfs_version, nodes| %>
 
   <div class="country mb-3">
     <h3>
-      <% if country_iso_code.present? %>
-        <% code = IsoCountryCodes.find(country_iso_code) %>
-        <% country_name = code.name %>
-        <%= flag_icon(country_iso_code) %>
-        <%= country_name %>
+      <% if minor_go_ipfs_version.present? %>
+        0.<%= minor_go_ipfs_version %>.X
       <% else %>
         Unknown
       <% end %>
@@ -33,10 +30,9 @@
         <% end %>
       </div>
       <div class="col-md-4">
-        <%= pie_chart nodes.group_by{|n| n.minor_go_ipfs_version.present? ? "0.#{n.minor_go_ipfs_version}.X" : 'Unknown'}.map{|k,v| [k,v.length]}.sort_by{|k,v| -v}, height: '200px' %>
-        <% if country_iso_code.present? %>
-          <%= pie_chart nodes.group_by(&:autonomous_system_organization).map{|k,v| [k,v.length]}.sort_by{|k,v| -v}, height: '200px' %>
-        <% end %>
+        <%= pie_chart nodes.group_by{|n| n.patch_go_ipfs_version || 'Unknown'}.map{|k,v| [k,v.length]}.sort_by{|k,v| -v}, height: '200px' %>
+
+        <%= pie_chart nodes.group_by(&:country_name).map{|k,v| [k,v.length]}.sort_by{|k,v| -v}, height: '200px' %>
       </div>
     </div>
   </div>

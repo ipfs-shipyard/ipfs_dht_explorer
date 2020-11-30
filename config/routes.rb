@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get :wants
       get :recent
       get :countries
+      get :versions
     end
   end
 
