@@ -1,0 +1,44 @@
+<% total_count = @scope.sum{|k,v| v.sum(&:wants_count)} %>
+
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Most Wants by Country' %></strong>
+    <small class='text-muted'><%= number_with_delimiter total_count %></small>
+  </span>
+</nav>
+
+<% @scope.each do |country_iso_code, nodes| %>
+
+  <div class="country mb-3">
+    <h3>
+      <% if country_iso_code.present? %>
+        <% code = IsoCountryCodes.find(country_iso_code) %>
+        <% country_name = code.name %>
+        <%= flag_icon(country_iso_code) %>
+        <%= country_name %>
+      <% else %>
+        Unknown
+      <% end %>
+
+      <small class='text-muted'>
+        <% count = nodes.sum(&:wants_count) %>
+        <%= number_with_delimiter count %> (<%= (count/total_count.to_f*100).round(1) %>%)
+      </small>
+    </h3>
+
+    <div class="row">
+      <div class="col-md-8">
+        <% nodes.sort_by{|n| -n.wants_count}.first(8).each do |node| %>
+          <%= render node %>
+        <% end %>
+      </div>
+      <div class="col-md-4">
+        <%= pie_chart nodes.group_by{|n| "0.#{n.minor_go_ipfs_version}.X"}.map{|k,v| [k,v.length]}.sort_by{|k,v| -v}, height: '200px' %>
+        <% if country_iso_code.present? %>
+          <%= pie_chart nodes.group_by(&:autonomous_system_organization).map{|k,v| [k,v.length]}.sort_by{|k,v| -v}, height: '200px' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <hr>
+<% end %>

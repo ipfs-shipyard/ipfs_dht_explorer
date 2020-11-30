@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     collection do
       get :wants
       get :recent
+      get :countries
     end
   end
 

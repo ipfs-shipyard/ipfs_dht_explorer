@@ -30,4 +30,8 @@ class CidsController < ApplicationController
   def wants
     redirect_to wants_nodes_path
   end
+
+  def countries
+    @scope = Node.where(pl: false).where('wants_count > 0').group_by(&:country_iso_code).sort_by{|k,v| -v.sum(&:wants_count)}
+  end
 end
