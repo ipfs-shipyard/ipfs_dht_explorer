@@ -13,6 +13,7 @@ class Node < ApplicationRecord
   scope :only_go_ipfs,  -> { where.not(minor_go_ipfs_version:nil)}
   scope :without_boosters, -> { where.not(agent_version: ['hydra-booster/0.7.0', 'hydra-booster/0.7.3', 'dhtbooster/2']) }
   scope :without_storm, -> { where.not(agent_version: ['storm']) }
+  scope :pl, -> { where(pl: true) }
 
   GEO_IP_DIR = ENV['GEO_IP_DIR'] || '/usr/local/var/GeoIP'
 
