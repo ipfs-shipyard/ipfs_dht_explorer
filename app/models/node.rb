@@ -77,8 +77,8 @@ class Node < ApplicationRecord
     if ipfs_connect
       if json = ipfs_id
         updates = {
-          multiaddrs: json['Addresses'].map{|a| a.split('/p2p/').first}.sort,
-          protocols: json['Protocols'].sort,
+          multiaddrs: Array(json['Addresses']).map{|a| a.split('/p2p/').first}.sort,
+          protocols: Array(json['Protocols']).sort,
           agent_version: json['AgentVersion'],
           sightings: sightings + 1,
           reachable: true
