@@ -26,7 +26,9 @@ namespace :wants do
 
     if data.any?
       ids = Cid.upsert_all(data, unique_by: :cid)
-      puts ids.length
+      ids.each do |id|
+        DetectContentTypeWorker.perform_async(id)
+      end
     end
 
     node_ids = []
