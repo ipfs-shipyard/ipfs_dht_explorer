@@ -6,6 +6,46 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="nav nav-pills mr-auto">
       <%= render partial: 'nodes/excludable_filter', locals: {filter_name: 'content_type', filter_label: 'Content Type', filter_collection: @content_types} %>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= 'active' if (params[:any_content_type].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Extras</a>
+        <div class="dropdown-menu">
+          <% if params[:any_content_type].present? %>
+            <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, any_content_type: nil)) %>">
+              With Content Type
+            </a>
+          <% else %>
+            <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, any_content_type: 'true')) %>">
+              With Content Type
+            </a>
+          <% end %>
+        </div>
+      </li>
+    </ul>
+    <ul class="nav nav-pills ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle <%= 'active' if (params[:sort].present? || params[:order].present?) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Sort</a>
+        <div class="dropdown-menu dropdown-menu-right text-right">
+          <% if params[:sort] == 'content_length' && params[:order] == 'asc' %>
+            <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, sort: nil, order: nil)) %>">
+              Smallest
+            </a>
+          <% else %>
+            <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, sort: 'content_length', order: 'asc')) %>">
+              Smallest
+            </a>
+          <% end %>
+          <% if params[:sort] == 'content_length' && params[:order] == 'desc' %>
+            <a class="dropdown-item active" title='Click to Remove' href="<%= url_for(request.params.merge(page: nil, sort: nil, order: nil)) %>">
+              Largest
+            </a>
+          <% else %>
+            <a class="dropdown-item" href="<%= url_for(request.params.merge(page: nil, sort: 'content_length', order: 'desc')) %>">
+              Largest
+            </a>
+          <% end %>
+        </div>
+      </li>
     </ul>
   </div>
 

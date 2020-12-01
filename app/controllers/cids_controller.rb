@@ -2,11 +2,16 @@ class CidsController < ApplicationController
   def index
     @scope = Cid.where('wants_count > 0')
 
+    @scope = @scope.where.not(content_length: nil) if params[:sort] == 'content_length'
+    @scope = @scope.where.not(content_type: nil) if params[:any_content_type].present?
     @scope = @scope.where(content_type: params[:content_type]) if params[:content_type].present?
 
     @content_types = @scope.unscope(where: :content_type).where.not(content_type: nil).group(:content_type).count
 
-    @pagy, @cids = pagy(@scope.order('wants_count DESC'))
+    sort = params[:sort] || 'cids.wants_count'
+    order = params[:order] || 'desc'
+
+    @pagy, @cids = pagy(@scope.order(sort => order))
   end
 
   def recent
