@@ -16,9 +16,9 @@ class CidsController < ApplicationController
 
   def recent
     @range = (params[:range].presence || 7).to_i
-    @scope = Want.where('created_at > ?', @range.days.ago).includes(:cid,:node).order('created_at DESC')
+    @scope = Want.where('created_at > ?', @range.days.ago).includes(:cid,:node)
 
-    @pagy, @wants = pagy(@scope)
+    @pagy, @wants = pagy(@scope.order('created_at DESC'))
   end
 
   def show
