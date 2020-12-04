@@ -85,7 +85,7 @@
         <div class='want mb-2'>
           <span class='cid'><%= link_to want.cid.cid, cid_path(want.cid.cid) %></span>
           <small class='text-muted'>
-            <%= distance_of_time_in_words_to_now want.created_at %> ago
+            <span title='<%= want.created_at %>'><%= distance_of_time_in_words_to_now want.created_at %> ago</span>
             <% if want.cid.content_type.present? %>
               <br>
                 <%= want.cid.content_type %>

@@ -35,7 +35,7 @@
           <% if node.agent_version.present? %>
             <%= node.agent_version %> -
           <% end %>
-          <%= distance_of_time_in_words_to_now want.created_at %> ago
+          <span title='<%= want.created_at %>'><%= distance_of_time_in_words_to_now want.created_at %> ago</span>
         </small>
       </div>
     <% end %>

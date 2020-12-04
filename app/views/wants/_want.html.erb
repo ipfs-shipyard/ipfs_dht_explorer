@@ -1,6 +1,6 @@
 <div class='cid mb-2'>
   <span class='cid'><%= link_to want.node.node_id, want.node %></span><br>
   <small class='text-muted'>
-    <%= want.created_at %>
+    <span title='<%= want.created_at %>'><%= distance_of_time_in_words_to_now want.created_at %> ago</span>
   </small>
 </div>
