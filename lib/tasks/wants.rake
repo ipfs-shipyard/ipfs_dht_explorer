@@ -2,6 +2,7 @@ namespace :wants do
   task parse: :environment do
     peers = Hash.new { |hash, key| hash[key] = [] }
     cids = []
+    pl_peer_ids = Node.pl.pluck(:node_id)
 
     data_path = '/data/ipfs'
     log_name = 'ipfs.log'
@@ -17,6 +18,9 @@ namespace :wants do
         next if i == wc_output # skip last line of file
         if line.match?(' wants ')
           parts = line.split(' ')
+
+          next if pl_peer_ids.include?(parts[4]) # skip PL node wants
+
           peers[parts[4]] << [parts[6], parts[0]]
           cids << parts[6]
         end
