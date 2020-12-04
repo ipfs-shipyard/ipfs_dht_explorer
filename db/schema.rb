@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_26_164756) do
+ActiveRecord::Schema.define(version: 2020_12_04_152055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 2020_11_26_164756) do
     t.integer "cid_id"
     t.datetime "created_at", null: false
     t.index ["cid_id"], name: "index_wants_on_cid_id"
+    t.index ["created_at"], name: "index_wants_on_created_at"
     t.index ["node_id"], name: "index_wants_on_node_id"
   end
 
