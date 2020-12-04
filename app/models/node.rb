@@ -174,7 +174,7 @@ class Node < ApplicationRecord
       begin
         ip = IPAddr.new(a.split('/')[2])
         !ip.loopback? && !ip.private? && !ip.link_local?
-      rescue IPAddr::InvalidAddressError
+      rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
         false
       end
     end
