@@ -30,9 +30,9 @@ namespace :wants do
     data = cids.uniq.map{|id, datetime| {cid: id} }
 
     if data.any?
-      ids = Cid.upsert_all(data, unique_by: :cid)
-      ids.each do |id|
-        DetectContentTypeWorker.perform_async(id)
+      records = Cid.upsert_all(data, unique_by: :cid)
+      records.each do |record|
+        DetectContentTypeWorker.perform_async(record["id"])
       end
     end
 
