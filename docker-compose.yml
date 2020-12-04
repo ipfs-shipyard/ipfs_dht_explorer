@@ -13,7 +13,7 @@ services:
       - DATABASE_HOST=database.service.explorer.internal
       - GEO_IP_DIR=/usr/share/GeoIP
       - RAILS_SERVE_STATIC_FILES=true
-      - RAILS_MAX_THREADS=20
+      - RAILS_MAX_THREADS=30
       - REDIS_URL=redis://redis.service.explorer.internal
       - IPFS_URL=ipfs.service.explorer.internal
       - RAILS_LOG_TO_STDOUT=true
