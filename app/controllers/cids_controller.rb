@@ -11,7 +11,7 @@ class CidsController < ApplicationController
     sort = params[:sort] || 'cids.wants_count'
     order = params[:order] || 'desc'
 
-    @pagy, @cids = pagy(@scope.order(sort => order))
+    @pagy, @cids = pagy(@scope.limit(10000).order(sort => order))
   end
 
   def recent
