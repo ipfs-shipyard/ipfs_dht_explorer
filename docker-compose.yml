@@ -76,6 +76,7 @@ services:
       - IPFS_PATH=/ipfsdata
       - IPFS_LOGGING=debug
       - IPFS_LOGGING_FMT=nocolor
+      - GOLOG_FILE=/ipfsdata/ipfs.log
     volumes:
       - ./data/ipfs:/ipfsdata
     ports:

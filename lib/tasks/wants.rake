@@ -3,24 +3,29 @@ namespace :wants do
     peers = Hash.new { |hash, key| hash[key] = [] }
     cids = []
 
-    data_path = '/data'
+    data_path = '/data/ipfs'
+    log_name = 'ipfs.log'
 
-    File.delete("#{data_path}/want-logs.txt.next") if File.exist?("#{data_path}/want-logs.txt.next")
-    FileUtils.cp("#{data_path}/want-logs.txt", "#{data_path}/want-logs.txt.next")
-    File.truncate("#{data_path}/want-logs.txt", 5)
+    File.delete("#{data_path}/#{log_name}.next") if File.exist?("#{data_path}/#{log_name}.next")
+    FileUtils.cp("#{data_path}/#{log_name}", "#{data_path}/#{log_name}.next")
+    File.truncate("#{data_path}/#{log_name}", 5)
 
-    wc_output = `wc -l #{data_path}/want-logs.txt.next`.to_i
+    wc_output = `wc -l #{data_path}/#{log_name}.next`.to_i
 
-    File.open("#{data_path}/want-logs.txt.next", "r") do |f|
+    File.open("#{data_path}/#{log_name}.next", "r:ISO-8859-1:UTF-8") do |f|
       f.each_line.with_index do |line,i|
         next if i == wc_output # skip last line of file
         if line.match?(' wants ')
           parts = line.split(' ')
-          peers[parts[6]] << [parts[8], parts[2]]
-          cids << parts[8]
+          peers[parts[4]] << [parts[6], parts[0]]
+          cids << parts[6]
         end
       end
     end
+
+    puts "lines: #{wc_output}"
+    puts "peers: #{peers.length}"
+    puts "cids: #{cids.length}"
 
     data = cids.uniq.map{|id, datetime| {cid: id} }
 
@@ -81,6 +86,6 @@ namespace :wants do
       ActiveRecord::Base.connection.execute(update_sql)
     end
 
-    FileUtils.rm ("#{data_path}/want-logs.txt.next")
+    FileUtils.rm ("#{data_path}/#{log_name}.next")
   end
 end
