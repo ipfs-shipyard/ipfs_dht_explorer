@@ -45,6 +45,13 @@ class Node < ApplicationRecord
     node_id
   end
 
+  def self.discover_connected_peers
+    Node.peers.each do |peer|
+      node = Node.find_or_create_by(node_id: peer['Peer'])
+      ManualCrawlWorker.perform_async(node.id)
+    end
+  end
+
   def self.ipfs_client
     @client ||= Ipfs::Client.new( "http://#{ENV.fetch("IPFS_URL") { 'localhost' }}:#{ENV.fetch("IPFS_PORT") { '5001' }}")
   end
