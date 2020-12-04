@@ -10,24 +10,16 @@ namespace :wants do
     File.delete("#{data_path}/#{log_name}.next") if File.exist?("#{data_path}/#{log_name}.next")
     FileUtils.cp("#{data_path}/#{log_name}", "#{data_path}/#{log_name}.next")
     File.truncate("#{data_path}/#{log_name}", 5)
+    `cat #{data_path}/#{log_name}.next | grep -a " wants " > #{data_path}/#{log_name}.short`
 
-    wc_output = `wc -l #{data_path}/#{log_name}.next`.to_i
-
-    File.open("#{data_path}/#{log_name}.next", "r:ISO-8859-1:UTF-8") do |f|
-      f.each_line.with_index do |line,i|
-        next if i == wc_output # skip last line of file
-        if line.match?(' wants ')
-          parts = line.split(' ')
-
-          next if pl_peer_ids.include?(parts[4]) # skip PL node wants
-
-          peers[parts[4]] << [parts[6], parts[0]]
-          cids << parts[6]
-        end
+    File.open("#{data_path}/#{log_name}.short", "r:ISO-8859-1:UTF-8") do |f|
+      f.each_line do |line|
+        parts = line.split(' ')
+        peers[parts[4]] << [parts[6], parts[0]]
+        cids << parts[6]
       end
     end
 
-    puts "lines: #{wc_output}"
     puts "peers: #{peers.length}"
     puts "cids: #{cids.length}"
 
@@ -45,6 +37,7 @@ namespace :wants do
 
     peers.each do |k,v|
       next if k.blank?
+      next if pl_peer_ids.include?(k) # skip PL node wants
       node = Node.find_by_node_id(k)
       if node.nil?
         puts "missing node: #{k}"
@@ -91,5 +84,6 @@ namespace :wants do
     end
 
     FileUtils.rm ("#{data_path}/#{log_name}.next")
+    FileUtils.rm ("#{data_path}/#{log_name}.short")
   end
 end
