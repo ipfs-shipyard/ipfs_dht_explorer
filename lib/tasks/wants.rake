@@ -1,5 +1,7 @@
 namespace :wants do
   task parse: :environment do
+    Node.ipfs_client.log_level 'engine', 'debug'
+
     peers = Hash.new { |hash, key| hash[key] = [] }
     cids = []
     pl_peer_ids = Node.pl.pluck(:node_id)
