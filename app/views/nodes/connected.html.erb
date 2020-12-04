@@ -1,0 +1,31 @@
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Connected Nodes' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+  </span>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'minor_go_ipfs_version', filter_label: 'Minor', filter_collection: @minor_go_ipfs_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'patch_go_ipfs_version', filter_label: 'Patch', filter_collection: @patch_go_ipfs_versions} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'asn', filter_label: 'Host', filter_collection: @autonomous_system_organizations} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'country_name', filter_label: 'Country', filter_collection: @country_names} %>
+      <%= render partial: 'excludable_filter', locals: {filter_name: 'domain_name', filter_label: 'Domain', filter_collection: @domains} %>
+
+      <%= render 'extras' %>
+
+      <%= render 'range_filter' %>
+    </ul>
+    <ul class="nav nav-pills ml-auto">
+      <%= render 'sort_filter' %>
+    </ul>
+  </div>
+</nav>
+
+<div class="row">
+  <div class="col-md-12">
+    <%= render @nodes %>
+
+    <%== pagy_bootstrap_nav(@pagy) %>
+  </div>
+</div>

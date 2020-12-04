@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get :storm
       get :pl
       get :wants
+      get :connected
       post :report
     end
   end

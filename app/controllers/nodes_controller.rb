@@ -192,6 +192,18 @@ class NodesController < ApplicationController
     @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
+  def connected
+    @scope = Node.where(node_id: Node.peers.map{|peer| peer['Peer']})
+
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
+
+    sort = params[:sort] || 'nodes.wants_count'
+    order = params[:order] || 'desc'
+
+    @pagy, @nodes = pagy(@scope.order(sort => order))
+  end
+
   private
 
   def apply_filters(scope)
