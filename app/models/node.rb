@@ -53,7 +53,9 @@ class Node < ApplicationRecord
   end
 
   def self.dial_incomplete_nodes
-    Node.where(multiaddrs: []).count
+    Node.where(multiaddrs: []).where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).each do |node|
+      ManualCrawlWorker.perform_async(node.id)
+    end
   end
 
   def self.ipfs_client
@@ -85,19 +87,19 @@ class Node < ApplicationRecord
   end
 
   def manual_crawl
-    if ipfs_connect
-      if json = ipfs_id
-        updates = {
-          multiaddrs: Array(json['Addresses']).map{|a| a.split('/p2p/').first}.sort,
-          protocols: Array(json['Protocols']).sort,
-          agent_version: json['AgentVersion'],
-          sightings: sightings + 1,
-          reachable: true,
-          last_crawled: Time.now
-        }
-        update(updates)
-        update_location_details
-      end
+    if ipfs_connect && json = ipfs_id
+      updates = {
+        multiaddrs: Array(json['Addresses']).map{|a| a.split('/p2p/').first}.sort,
+        protocols: Array(json['Protocols']).sort,
+        agent_version: json['AgentVersion'],
+        sightings: sightings + 1,
+        reachable: true,
+        last_crawled: Time.now
+      }
+      update(updates)
+      update_location_details
+    else
+      update_column(:last_crawled, Time.now)
     end
   end
 
