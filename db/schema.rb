@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_07_144742) do
+ActiveRecord::Schema.define(version: 2020_12_07_161635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2020_12_07_144742) do
     t.string "content_type"
     t.bigint "content_length"
     t.index ["cid"], name: "index_cids_on_cid", unique: true
+    t.index ["wants_count"], name: "index_cids_on_wants_count"
   end
 
   create_table "edges", force: :cascade do |t|
