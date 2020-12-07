@@ -1,4 +1,4 @@
 discover_connected_peers:
-  cron: "*/10 * * * *"
+  cron: "*/30 * * * *"
   class: "DiscoverConnectedPeersWorker"
   queue: critical
