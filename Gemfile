@@ -50,6 +50,8 @@ gem 'omniauth-github'
 gem 'octokit'
 gem 'ipfs-http-client', github: 'andrew/ipfs-http-client'
 
+gem 'sidekiq-cron'
+
 group :development, :test do
   gem 'dotenv-rails'
 end
