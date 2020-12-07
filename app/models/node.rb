@@ -52,6 +52,10 @@ class Node < ApplicationRecord
     end
   end
 
+  def self.dial_incomplete_nodes
+    Node.where(multiaddrs: []).count
+  end
+
   def self.ipfs_client
     @client ||= Ipfs::Client.new( "http://#{ENV.fetch("IPFS_URL") { 'localhost' }}:#{ENV.fetch("IPFS_PORT") { '5001' }}")
   end
@@ -88,7 +92,8 @@ class Node < ApplicationRecord
           protocols: Array(json['Protocols']).sort,
           agent_version: json['AgentVersion'],
           sightings: sightings + 1,
-          reachable: true
+          reachable: true,
+          last_crawled: Time.now
         }
         update(updates)
         update_location_details
