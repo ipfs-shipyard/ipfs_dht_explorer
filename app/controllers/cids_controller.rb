@@ -45,7 +45,7 @@ class CidsController < ApplicationController
     @range = (params[:range].presence || 7).to_i
     @scope = Want.where('created_at > ?', @range.days.ago).includes(:cid,:node)
 
-    render json: @scope.group_by_hour(:created_at).count
+    render json: @scope.group_by_day(:created_at).count
   end
 
   private

@@ -1,10 +1,11 @@
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
     <strong><%= @page_title = 'Recently Wanted CID' %></strong>
+    <small class='text-muted'><%= number_with_delimiter Want.fast_total %></small>
   </span>
 </nav>
 
-<%= line_chart recent_chart_cids_path, colors: ['#bbb'], height: "200px", library: { scales: { yAxes: [{ display: false }], xAxes: [{ display: false }] }}, points: false %>
+<%= line_chart recent_chart_cids_path(range: @range), colors: ['#bbb'], height: "200px", library: { scales: { yAxes: [{ display: false }], xAxes: [{ display: false }] }}, points: false %>
 
 <div class="row">
   <div class="col-md-12">
