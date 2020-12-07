@@ -53,7 +53,7 @@ class Node < ApplicationRecord
   end
 
   def self.dial_incomplete_nodes
-    Node.where(multiaddrs: []).where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).each do |node|
+    Node.where('agent_version = ? or agent_version = ? or multiaddrs = ?', nil, '', '{}').where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).order('last_crawled ASC nulls first').limit(500).each do |node|
       ManualCrawlWorker.perform_async(node.id)
     end
   end
