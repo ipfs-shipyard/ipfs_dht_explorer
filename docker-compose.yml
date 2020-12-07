@@ -59,6 +59,10 @@ services:
 
   crawler:
     image: ipfsshipyard/libp2p-dht-scrape-client:latest
+    networks:
+      - internal
+    environment:
+      - EXPLORER_URL=app:5000
 
   redis.service.explorer.internal:
     image: redis:6.0-alpine
