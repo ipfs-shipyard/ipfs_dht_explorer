@@ -1,24 +1,21 @@
 class CidsController < ApplicationController
   def index
-    @scope = Cid.where('wants_count > 0')
+    @scope = Cid.all
 
-    @scope = @scope.where.not(content_length: nil) if params[:sort] == 'content_length'
-    @scope = @scope.where.not(content_type: nil) if params[:any_content_type].present?
-    @scope = @scope.where(content_type: params[:content_type]) if params[:content_type].present?
-
-    @content_types = @scope.unscope(where: :content_type).where.not(content_type: nil).group(:content_type).count
+    @scope = apply_filters(@scope)
+    filter_counts(@scope)
 
     sort = params[:sort] || 'cids.wants_count'
     order = params[:order] || 'desc'
 
-    @pagy, @cids = pagy(@scope.limit(1000).order(sort => order))
+    @pagy, @cids = pagy_countless(@scope.order(sort => order))
   end
 
   def recent
     @range = (params[:range].presence || 7).to_i
     @scope = Want.where('created_at > ?', @range.days.ago).includes(:cid,:node)
 
-    @pagy, @wants = pagy(@scope.order('created_at DESC'))
+    @pagy, @wants = pagy_countless(@scope.order('created_at DESC'))
   end
 
   def show
@@ -42,5 +39,26 @@ class CidsController < ApplicationController
 
   def versions
     @scope = Node.where(pl: false).where('wants_count > 0').group_by(&:minor_go_ipfs_version).sort_by{|k,v| -v.sum(&:wants_count)}
+  end
+
+  def recent_chart
+    @range = (params[:range].presence || 7).to_i
+    @scope = Want.where('created_at > ?', @range.days.ago).includes(:cid,:node)
+
+    render json: @scope.group_by_hour(:created_at).count
+  end
+
+  private
+
+  def apply_filters(scope)
+    scope = scope.where.not(content_length: nil) if params[:sort] == 'content_length'
+    scope = scope.where.not(content_type: nil) if params[:any_content_type].present?
+    scope = scope.where(content_type: params[:content_type]) if params[:content_type].present?
+
+    return scope
+  end
+
+  def filter_counts(scope)
+    @content_types = scope.unscope(where: :content_type).where.not(content_type: nil).group(:content_type).count
   end
 end

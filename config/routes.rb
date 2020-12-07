@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       get :recent
       get :countries
       get :versions
+      get :recent_chart
     end
   end
 
