@@ -58,6 +58,12 @@ class Node < ApplicationRecord
     end
   end
 
+  def self.dial_inactive_nodes
+    Node.where('updated_at < ?', 1.day.ago).where('updated_at > ?', 7.days.ago).where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).order('last_crawled ASC nulls first').limit(500).each do |node|
+      ManualCrawlWorker.perform_async(node.id)
+    end
+  end
+
   def self.ipfs_client
     @client ||= Ipfs::Client.new( "http://#{ENV.fetch("IPFS_URL") { 'localhost' }}:#{ENV.fetch("IPFS_PORT") { '5001' }}")
   end
