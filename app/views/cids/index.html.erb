@@ -54,22 +54,7 @@
 
 <div class="row">
   <div class="col-md-12">
-    <% @cids.each do |cid| %>
-      <div class='cid mb-2'>
-        <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
-        <small class='text-muted'>
-          <%= number_with_delimiter cid.wants_count %> wants
-          <% if cid.content_type.present? %>
-              - <%= cid.content_type %>
-              <% if cid.content_length.present? %>
-                - <%= number_to_human_size cid.content_length %>
-              <% end %>
-          <% end %>
-        </small>
-
-      </div>
-
-    <% end %>
+    <%= render @cids %>
 
     <%== pagy_bootstrap_nav(@pagy) %>
   </div>

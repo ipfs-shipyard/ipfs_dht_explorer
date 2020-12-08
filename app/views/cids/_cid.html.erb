@@ -1,11 +1,13 @@
 <div class='cid mb-2'>
-  <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span><br>
-  <% if cid.content_type.present? %>
-    <small class='text-muted'>
+  <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
+  <small class='text-muted'>
+    <% if cid.content_type.present? %>
       <%= cid.content_type %>
       <% if cid.content_length.present? %>
         - <%= number_to_human_size cid.content_length %>
       <% end %>
-    </small>
-  <% end %>
+    <% elsif cid.last_loaded_at %>
+      <span title='Last load attempted at <%= cid.last_loaded_at %>'>Not found</span>
+    <% end %>
+  </small>
 </div>
