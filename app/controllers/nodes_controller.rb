@@ -131,6 +131,15 @@ class NodesController < ApplicationController
     sort = params[:sort] || 'nodes.id'
     order = params[:order] || 'desc'
 
+    @graph = {}
+    (Date.today-(@range - 1)..Date.today).map do |d|
+      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:patch_go_ipfs_version).count
+      count.each do |k,v|
+        key = [k, d]
+        @graph[key] = v
+      end
+    end
+
     @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
