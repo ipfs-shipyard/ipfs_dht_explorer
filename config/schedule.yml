@@ -8,7 +8,7 @@ dial_incomplete_nodes:
   class: "DialIncompleteNodesWorker"
   queue: critical
 
-dial_inactive_nodes:
-  cron: "15 */1 * * *"
-  class: "DialInactiveNodesWorker"
+detect_content_types:
+  cron: "45 */1 * * *"
+  class: "DetectContentTypesWorker"
   queue: critical
