@@ -47,8 +47,12 @@ class Node < ApplicationRecord
 
   def self.discover_connected_peers
     Node.peers.each do |peer|
-      node = Node.find_or_create_by(node_id: peer['Peer'])
-      ManualCrawlWorker.perform_async(node.id)
+      if node = Node.find_by_node_id(peer['Peer'])
+        ManualCrawlWorker.perform_async(node.id) if node.agent_version.blank?
+      else
+        node = Node.create(node_id: peer['Peer'])
+        ManualCrawlWorker.perform_async(node.id)
+      end
     end
   end
 
