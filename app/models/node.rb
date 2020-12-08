@@ -107,6 +107,8 @@ class Node < ApplicationRecord
         last_crawled: Time.now
       }
       update(updates)
+      update_minor_go_ipfs_version
+      update_patch_go_ipfs_version
       update_location_details
     else
       update_column(:last_crawled, Time.now)
