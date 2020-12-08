@@ -26,7 +26,10 @@
           </span><br/>
           <small class='text-muted'>
             wanted by
-            <span class=''><%= link_to want.node.node_id, want.node %></span>
+            <%= link_to want.node.node_id, want.node %>
+            <% if want.node.agent_version.present? %>
+              <%= want.node.agent_version %> -
+            <% end %>
             <span title='<%= want.created_at %>'><%= distance_of_time_in_words_to_now want.created_at %> ago</span>
           </small>
         </p>
