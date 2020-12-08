@@ -1,13 +1,14 @@
 <div class='cid mb-2'>
   <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
   <small class='text-muted'>
+    <%= number_with_delimiter cid.wants_count %> wants
     <% if cid.content_type.present? %>
-      <%= cid.content_type %>
+       - <%= cid.content_type %>
       <% if cid.content_length.present? %>
         - <%= number_to_human_size cid.content_length %>
       <% end %>
     <% elsif cid.last_loaded_at %>
-      <span title='Last load attempted at <%= cid.last_loaded_at %>'>Not found</span>
+       - <span title='Last load attempted at <%= cid.last_loaded_at %>'>Unknown type</span>
     <% end %>
   </small>
 </div>
