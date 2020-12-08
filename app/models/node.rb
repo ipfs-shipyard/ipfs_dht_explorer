@@ -68,6 +68,12 @@ class Node < ApplicationRecord
     end
   end
 
+  def self.dial_secio_nodes
+    Node.before_secio.order('last_crawled ASC nulls first').limit(500).pluck(:id).each do |id|
+      ManualCrawlWorker.perform_async(id)
+    end
+  end
+
   def self.ipfs_client
     @client ||= Ipfs::Client.new( "http://#{ENV.fetch("IPFS_URL") { 'localhost' }}:#{ENV.fetch("IPFS_PORT") { '5001' }}")
   end
