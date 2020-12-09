@@ -16,24 +16,32 @@
 
 Build the image:
 
-```
+```sh
 docker build -t ipfsshipyard/ipfs_dht_explorer:latest .
 ```
 
 Push it to docker hub
 
-```
+```sh
 docker push ipfsshipyard/ipfs_dht_explorer:latest
 ```
 
 To access the rails console:
 
-```
+```sh
 docker-compose exec app rails console
 ```
 
 Export the postgres database
 
-```
+```sh
 docker exec -u postgres ipfs_dht_explorer_database.service.explorer.internal_1 pg_dump -Fc postgres > db.dump
+```
+
+## Local
+
+Start locally by using `docker-compose`:
+
+```sh
+docker-compose up --build
 ```
