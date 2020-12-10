@@ -1,0 +1,12 @@
+<h3 class='mb-0'>
+  <%= link_to export.filename, "https://gateway.ipfs.io/ipfs/#{export.cid}?filename=#{export.filename}" %>
+  <small class='text-muted'>
+    <%= number_to_human_size export.size %> - <%= number_with_delimiter export.records %> <%= export.kind %>
+  </small>
+</h3>
+<small class='text-muted'>
+  /ipfs/<%= export.cid %>
+</small>
+<p>
+  <%= export.description %>
+</p>

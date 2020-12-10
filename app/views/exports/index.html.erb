@@ -1,0 +1,22 @@
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Exports' %></strong>
+  </span>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+
+    </ul>
+    <ul class="nav nav-pills ml-auto">
+      <%= render 'sort_filter' %>
+    </ul>
+  </div>
+</nav>
+
+<div class="row">
+  <div class="col-md-12">
+    <%= render @exports %>
+    
+    <%== pagy_bootstrap_nav(@pagy) %>
+  </div>
+</div>

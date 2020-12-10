@@ -53,8 +53,15 @@ class Node < ApplicationRecord
         csv << node.attributes.values
       end
     end
-
-    Node.ipfs_client.add(path)
+    records = scope.count
+    resp = Node.ipfs_client.add(path)
+    Export.create(filename: resp['Name'],
+                  kind: 'nodes',
+                  cid: resp['Hash'],
+                  size: resp['Size'],
+                  records: records,
+                  description: "Nodes seen between #{start_date} and #{end_date}")
+    File.delete(path)
   end
 
   def self.discover_connected_peers

@@ -1,0 +1,2 @@
+class Export < ApplicationRecord
+end
