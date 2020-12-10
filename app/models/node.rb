@@ -60,7 +60,7 @@ class Node < ApplicationRecord
                   cid: resp['Hash'],
                   size: resp['Size'],
                   records: records,
-                  description: "Nodes seen between #{start_date} and #{end_date}")
+                  description: "Nodes seen between #{start_date.strftime('%b %d, %Y, %l:%M %p')} and #{end_date.strftime('%b %d, %Y, %l:%M %p')}")
     File.delete(path)
   end
 
