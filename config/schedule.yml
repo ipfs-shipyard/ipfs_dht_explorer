@@ -17,3 +17,8 @@ detect_content_types:
   cron: "45 */1 * * *"
   class: "DetectContentTypesWorker"
   queue: critical
+
+export_nodes:
+  cron: "0 0 * * 0"
+  class: "ExportNodesWorker"
+  queue: critical
