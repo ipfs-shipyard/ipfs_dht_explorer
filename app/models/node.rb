@@ -45,6 +45,18 @@ class Node < ApplicationRecord
     node_id
   end
 
+  def self.export(path, start_date, end_date)
+    scope = Node.where('updated_at > ?', start_date).where('updated_at < ?', end_date)
+    CSV.open(path, "wb", row_sep: "\r\n") do |csv|
+      csv << Node.attribute_names
+      scope.find_each do |node|
+        csv << node.attributes.values
+      end
+    end
+
+    # TODO add to ipfs
+  end
+
   def self.discover_connected_peers
     Node.peers.each do |peer|
       if node = Node.find_by_node_id(peer['Peer'])
