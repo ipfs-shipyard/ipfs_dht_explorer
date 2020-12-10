@@ -54,7 +54,7 @@ class Node < ApplicationRecord
       end
     end
 
-    # TODO add to ipfs
+    Node.ipfs_client.add(path)
   end
 
   def self.discover_connected_peers
