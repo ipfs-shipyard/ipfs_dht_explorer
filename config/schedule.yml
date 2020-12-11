@@ -23,6 +23,11 @@ export_nodes:
   class: "ExportNodesWorker"
   queue: critical
 
+export_cids:
+  cron: "0 0 * * 0"
+  class: "ExportCidsWorker"
+  queue: critical
+
 export_wants:
   cron: "0 0 * * *"
   class: "ExportWantsWorker"
