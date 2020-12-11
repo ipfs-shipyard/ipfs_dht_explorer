@@ -7,6 +7,6 @@ namespace :nodes do
     start_date = 7.days.ago
     end_date = Time.now
     path = '/data/ipfs/nodes.csv'
-    p Node.export(path, start_date, end_date)
+    Node.export(path, start_date, end_date)
   end
 end

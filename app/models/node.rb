@@ -53,8 +53,12 @@ class Node < ApplicationRecord
         csv << node.attributes.values
       end
     end
+    filename = path.split('/').last
+    folders = path.split('/')[0..-2].join('/')
+    `cd #{folders} && tar -czf #{filename}.tar.gz #{filename}`
+    archive_path = "#{folders}/#{filename}.tar.gz"
     records = scope.count
-    resp = Node.ipfs_client.add(path)
+    resp = Node.ipfs_client.add(archive_path)
     Export.create(filename: resp['Name'],
                   kind: 'nodes',
                   cid: resp['Hash'],
@@ -62,6 +66,7 @@ class Node < ApplicationRecord
                   records: records,
                   description: "Nodes seen between #{start_date.strftime('%b %d, %Y, %l:%M %p')} and #{end_date.strftime('%b %d, %Y, %l:%M %p')}")
     File.delete(path)
+    File.delete(archive_path)
   end
 
   def self.discover_connected_peers
