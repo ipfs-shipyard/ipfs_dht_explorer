@@ -88,4 +88,11 @@ namespace :wants do
     FileUtils.rm ("#{data_path}/#{log_name}.next")
     FileUtils.rm ("#{data_path}/#{log_name}.short")
   end
+
+  task export: :environment do
+    start_date = 1.day.ago
+    end_date = Time.now
+    path = '/data/ipfs/wants.csv'
+    Want.export(path, start_date, end_date)
+  end
 end
