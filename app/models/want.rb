@@ -8,7 +8,7 @@ class Want < ApplicationRecord
     scope = Want.where('created_at > ?', start_date).where('created_at < ?', end_date).includes(:cid, :node)
     CSV.open(path, "wb", row_sep: "\r\n") do |csv|
       csv << ['Peer ID', 'CID', 'time']
-      scope.find_each do |want|
+      scope.find_each(batch_size: 5000) do |want|
         csv << [want.node.node_id, want.cid.cid, want.created_at]
       end
     end

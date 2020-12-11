@@ -49,7 +49,7 @@ class Node < ApplicationRecord
     scope = Node.where('updated_at > ?', start_date).where('updated_at < ?', end_date)
     CSV.open(path, "wb", row_sep: "\r\n") do |csv|
       csv << Node.attribute_names
-      scope.find_each do |node|
+      scope.find_each(batch_size: 5000) do |node|
         csv << node.attributes.values
       end
     end
