@@ -96,15 +96,6 @@ main > .container {
  }
 }
 
-.dependencies .card-header:after {
-   content: "-";
-   float: right;
-}
-.dependencies .card-header.collapsed:after {
-   /* symbol for "collapsed" panels */
-   content: "+";
-}
-
 .home{
  small{
    font-size: 0.7em;
