@@ -1,6 +1,8 @@
 require 'csv'
 
 class Node < ApplicationRecord
+  CURRENT_MINOR_VERSION = 7
+
   has_many :wants, dependent: :delete_all
 
   has_many :source_edges, class_name: 'Edge', foreign_key: :source_id
@@ -15,6 +17,7 @@ class Node < ApplicationRecord
   scope :without_storm, -> { where.not(agent_version: ['storm']) }
   scope :pl, -> { where(pl: true) }
   scope :not_pl, -> { where(pl: false) }
+  scope :outdated, -> { where('minor_go_ipfs_version::integer < ?', Node::CURRENT_MINOR_VERSION) }
 
   GEO_IP_DIR = ENV['GEO_IP_DIR'] || '/usr/local/var/GeoIP'
 
@@ -35,8 +38,6 @@ class Node < ApplicationRecord
     '0.4.23-rc1',
     '0.4.23-rc2'
   ]
-
-  CURRENT_MINOR_VERSION = 7
 
   scope :before_secio, -> {where(minor_go_ipfs_version: 4).where.not(patch_go_ipfs_version: SECIO_PATCH_VERSIONS)}
 

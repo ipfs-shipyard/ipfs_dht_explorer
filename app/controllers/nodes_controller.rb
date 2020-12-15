@@ -18,7 +18,7 @@ class NodesController < ApplicationController
   end
 
   def outdated
-    @scope = Node.only_go_ipfs.where('minor_go_ipfs_version::integer < ?', Node::CURRENT_MINOR_VERSION)
+    @scope = Node.only_go_ipfs.outdated
     @scope = apply_filters(@scope)
 
     @graph = {}
