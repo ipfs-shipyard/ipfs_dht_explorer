@@ -36,6 +36,8 @@ class Node < ApplicationRecord
     '0.4.23-rc2'
   ]
 
+  CURRENT_MINOR_VERSION = 7
+
   scope :before_secio, -> {where(minor_go_ipfs_version: 4).where.not(patch_go_ipfs_version: SECIO_PATCH_VERSIONS)}
 
   def to_s

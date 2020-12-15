@@ -17,6 +17,13 @@ class NodesController < ApplicationController
     end
   end
 
+  def outdated
+    @scope = Node.only_go_ipfs.where('minor_go_ipfs_version::integer < ?', Node::CURRENT_MINOR_VERSION)
+    @scope = apply_filters(@scope)
+
+    @pagy, @versions = pagy_array(@scope.group(:agent_version).order('count_all desc').count.to_a, items: 10)
+  end
+
   def index
     @scope = Node.only_go_ipfs
 

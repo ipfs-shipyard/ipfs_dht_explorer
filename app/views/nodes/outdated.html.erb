@@ -1,0 +1,70 @@
+<nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
+  <span class="navbar-brand" >
+    <strong><%= @page_title = 'Outdated Nodes' %></strong>
+    <small class='text-muted'><%= number_with_delimiter @scope.count %></small>
+  </span>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills mr-auto">
+
+      <%= render 'range_filter' %>
+    </ul>
+  </div>
+</nav>
+
+<div class="row">
+  <div class="col-md-12">
+    <% @versions.each do |agent_version, count| %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <%= agent_version %>
+            <small class='text-muted'>
+              <%= number_with_delimiter count %>
+            </small>
+          </h5>
+
+          <div class="row">
+            <div class="col-md-6">
+              <% country_scope = @scope.where(agent_version: agent_version).group(:country_name).order('count_all desc').count %>
+              <table class='table table-sm'>
+                <% country_scope.first(5).each do |country_name, country_name_count| %>
+                  <tr>
+                    <td>
+                      <%= link_to_unless country_name.blank?, (country_name || 'Unknown').truncate(20), nodes_path(country_name: country_name) %>
+                    </td>
+                    <td>
+                      <%= country_name_count %>
+                    </td>
+                    <td>
+                      <%= (country_name_count/count.to_f*100).round(1) %>%
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <% network_scope = @scope.where(agent_version: agent_version).group(:autonomous_system_organization).order('count_all desc').count %>
+              <table class='table table-sm'>
+                <% network_scope.first(5).each do |asn, asn_count| %>
+                  <tr>
+                    <td>
+                      <%= link_to_unless asn.blank?, (asn || 'Unknown').truncate(20), nodes_path(asn: asn) %>
+                    </td>
+                    <td>
+                      <%= asn_count %>
+                    </td>
+                    <td>
+                      <%= (asn_count/count.to_f*100).round(1) %>%
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <%== pagy_bootstrap_nav(@pagy) %>
+  </div>
+</div>
