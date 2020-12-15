@@ -84,19 +84,19 @@ class Node < ApplicationRecord
   end
 
   def self.dial_incomplete_nodes
-    Node.where('agent_version = ? or agent_version = ? or multiaddrs = ?', nil, '', '{}').where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).order('last_crawled ASC nulls first').limit(500).pluck(:id).each do |id|
+    Node.where('agent_version = ? or agent_version = ? or multiaddrs = ?', nil, '', '{}').where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).order('last_crawled ASC nulls first').limit(250).pluck(:id).each do |id|
       ManualCrawlWorker.perform_async(id)
     end
   end
 
   def self.dial_inactive_nodes
-    Node.where('updated_at < ?', 1.day.ago).where('updated_at > ?', 7.days.ago).where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).order('last_crawled ASC nulls first').limit(500).pluck(:id).each do |id|
+    Node.where('updated_at < ?', 1.day.ago).where('updated_at > ?', 7.days.ago).where('last_crawled < ? or last_crawled is ?', 1.day.ago, nil).order('last_crawled ASC nulls first').limit(250).pluck(:id).each do |id|
       ManualCrawlWorker.perform_async(id)
     end
   end
 
   def self.dial_secio_nodes
-    Node.before_secio.order('last_crawled ASC nulls first').limit(500).pluck(:id).each do |id|
+    Node.before_secio.order('last_crawled ASC nulls first').limit(250).pluck(:id).each do |id|
       ManualCrawlWorker.perform_async(id)
     end
   end

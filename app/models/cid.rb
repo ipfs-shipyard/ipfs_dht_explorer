@@ -7,7 +7,7 @@ class Cid < ApplicationRecord
   IPFS_GATEWAY_HOST = "http://#{ENV.fetch("IPFS_URL") { '127.0.0.1' }}:#{ENV.fetch("IPFS_GATEWAY_PORT") { '8080' }}"
 
   def self.detect_content_types
-    Cid.where(content_type: nil, last_loaded_at: nil).limit(1000).order('wants_count desc').pluck(:id).each{|id| DetectContentTypeWorker.perform_async(id) }
+    Cid.where(content_type: nil, last_loaded_at: nil).limit(500).order('wants_count desc').pluck(:id).each{|id| DetectContentTypeWorker.perform_async(id) }
   end
 
   def detect_content_type
