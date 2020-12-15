@@ -24,7 +24,7 @@
       </small>
     </h4>
 
-    <%= line_chart @scope.group_by_hour(:created_at).count, colors: ['#bbb'], height: "200px", library: { scales: { yAxes: [{ display: false }], xAxes: [{ display: false }] }}, points: false %>
+    <%= line_chart  show_chart_cid_path(@cid.cid), colors: ['#bbb'], height: "200px", library: { scales: { yAxes: [{ display: false }], xAxes: [{ display: false }] }}, points: false %>
 
     <% @wants.each do |want| %>
       <% node = want.node %>

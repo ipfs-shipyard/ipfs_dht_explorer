@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   resources :versions, constraints: { :id => /[^\/]+/ }
 
   resources :cids do
+    member do
+      get :show_chart
+    end
     collection do
       get :wants
       get :recent

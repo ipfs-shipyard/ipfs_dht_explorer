@@ -21,12 +21,17 @@ class CidsController < ApplicationController
   def show
     @cid = Cid.find_by_cid!(params[:id])
 
-    @range = (params[:range].presence || 7).to_i
-    @scope = @cid.wants.includes(:node).where('created_at > ?', @range.days.ago)
+    @scope = @cid.wants.includes(:node)
 
     @nodes = @cid.nodes.group_by(&:id).map{|k,v| [v.first, v.length]}
 
-    @pagy, @wants = pagy(@scope)
+    @pagy, @wants = pagy(@scope.order('created_at DESC'))
+  end
+
+  def show_chart
+    @cid = Cid.find_by_cid!(params[:id])
+    @scope = @cid.wants.includes(:node)
+    render json: @scope.group_by_day(:created_at).count
   end
 
   def wants
