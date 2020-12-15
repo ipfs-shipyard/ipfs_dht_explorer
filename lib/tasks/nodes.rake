@@ -11,11 +11,11 @@ namespace :nodes do
   end
 
   task outdated_cids: :environment do
-    versions = Node.only_go_ipfs.outdated.group(:agent_version).order('count_all desc').count.first(15)
+    versions = Node.only_go_ipfs.outdated.group(:agent_version).order('count_all desc').count.first(50)
 
     versions.each do |version, _count|
       scope = Node.where(agent_version: version).not_pl
-      wants = Want.where(node_id: @scope.pluck(:id)).group(:cid_id).order('count_all desc').count.first(50)
+      wants = Want.where(node_id: scope.pluck(:id)).group(:cid_id).order('count_all desc').count.first(500)
 
       wants.each do |cid_id, _count|
         DetectContentTypeWorker.perform_async(cid_id)
