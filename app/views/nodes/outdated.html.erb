@@ -26,12 +26,19 @@
 
           <div class="row">
             <div class="col-md-6">
-              <% country_scope = @scope.where(agent_version: agent_version).group(:country_name).order('count_all desc').count %>
+              <% country_scope = @scope.where(agent_version: agent_version).group(:country_iso_code).order('count_all desc').count %>
               <table class='table table-sm'>
-                <% country_scope.first(5).each do |country_name, country_name_count| %>
+                <% country_scope.first(5).each do |country_iso_code, country_name_count| %>
+                  <% if country_iso_code.present? %>
+                    <% code = IsoCountryCodes.find(country_iso_code) %>
+                    <% country_name = code.name %>
+                  <% else %>
+                    <% country_name = 'Unknown' %>
+                  <% end %>
                   <tr>
                     <td>
-                      <%= link_to_unless country_name.blank?, (country_name || 'Unknown').truncate(20), nodes_path(country_name: country_name) %>
+                      <%= flag_icon(country_iso_code) %>
+                      <%= link_to_unless country_iso_code.blank?, country_name.truncate(20), nodes_path(country_name: country_name) %>
                     </td>
                     <td>
                       <%= country_name_count %>
