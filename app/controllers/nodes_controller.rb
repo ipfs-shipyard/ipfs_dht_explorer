@@ -21,6 +21,16 @@ class NodesController < ApplicationController
     @scope = Node.only_go_ipfs.where('minor_go_ipfs_version::integer < ?', Node::CURRENT_MINOR_VERSION)
     @scope = apply_filters(@scope)
 
+    @graph = {}
+    (Date.today-(@range - 1)..Date.today).map do |d|
+      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:agent_version).count
+      count.each do |k,v|
+        next unless v > 10
+        key = [k, d]
+        @graph[key] = v
+      end
+    end
+
     @pagy, @versions = pagy_array(@scope.group(:agent_version).order('count_all desc').count.to_a, items: 10)
   end
 

@@ -13,6 +13,10 @@
 </nav>
 
 <div class="row">
+  <%= line_chart @graph %>
+</div>
+
+<div class="row">
   <div class="col-md-12">
     <% @versions.each do |agent_version, count| %>
       <div class="card mb-3">
