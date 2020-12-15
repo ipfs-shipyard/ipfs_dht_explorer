@@ -16,9 +16,24 @@
   <%= line_chart "/versions/#{ERB::Util.url_encode @version}/show_chart?range=#{@range}" %>
 </div>
 
-<p>TODO: secio</p>
+<% version_number = @version.split('/')[1] %>
+<% commit = @version.split('/')[2] %>
 
-<p>TODO: github release</p>
+<% unless Node::SECIO_PATCH_VERSIONS.include? version_number %>
+  <p>
+    <strong>SECIO patched:</strong> false
+  </p>
+<% end %>
+
+<p><strong>Github Release:</strong> <%= link_to version_number, "https://github.com/ipfs/go-ipfs/releases/tag/v#{version_number}", target: :_blank %></p>
+
+<% if commit %>
+<p>
+  <strong>Commit:</strong>
+
+  <%= link_to commit, "https://github.com/ipfs/go-ipfs/commit/#{commit}", target: :_blank %>
+</p>
+<% end %>
 
 <p>TODO: open source usage</p>
 
