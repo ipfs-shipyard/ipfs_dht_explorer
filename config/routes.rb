@@ -15,7 +15,11 @@ Rails.application.routes.draw do
 
   resources :exports
 
-  resources :versions, constraints: { :id => /[^\/]+/ }
+  resources :versions, constraints: { :id => /[^\/]+/ } do
+    member do
+      get :show_chart
+    end
+  end
 
   resources :cids do
     member do

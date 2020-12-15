@@ -13,7 +13,7 @@
 </nav>
 
 <div class="row">
-  <%= line_chart @graph %>
+  <%= line_chart "/versions/#{ERB::Util.url_encode @version}/show_chart?range=#{@range}" %>
 </div>
 
 <p>TODO: secio</p>
@@ -64,9 +64,6 @@
           <% end %>
         </small>
       </div>
-
-
     <% end %>
-
   </div>
 </div>
