@@ -14,6 +14,7 @@ class Node < ApplicationRecord
   scope :without_boosters, -> { where.not(agent_version: ['hydra-booster/0.7.0', 'hydra-booster/0.7.3', 'dhtbooster/2']) }
   scope :without_storm, -> { where.not(agent_version: ['storm']) }
   scope :pl, -> { where(pl: true) }
+  scope :not_pl, -> { where(pl: false) }
 
   GEO_IP_DIR = ENV['GEO_IP_DIR'] || '/usr/local/var/GeoIP'
 

@@ -34,11 +34,11 @@ class CidsController < ApplicationController
   end
 
   def countries
-    @scope = Node.where(pl: false).where('wants_count > 0').group_by(&:country_iso_code).sort_by{|k,v| -v.sum(&:wants_count)}
+    @scope = Node.not_pl.where('wants_count > 0').group_by(&:country_iso_code).sort_by{|k,v| -v.sum(&:wants_count)}
   end
 
   def versions
-    @scope = Node.where(pl: false).where('wants_count > 0').group_by(&:minor_go_ipfs_version).sort_by{|k,v| -v.sum(&:wants_count)}
+    @scope = Node.not_pl.where('wants_count > 0').group_by(&:minor_go_ipfs_version).sort_by{|k,v| -v.sum(&:wants_count)}
   end
 
   def recent_chart
