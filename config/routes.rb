@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   resources :exports
 
+  resources :versions, constraints: { :id => /[^\/]+/ }
+
   resources :cids do
     collection do
       get :wants

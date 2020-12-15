@@ -18,7 +18,7 @@
       <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">
-            <%= agent_version %>
+            <%= link_to agent_version, "/versions/#{ERB::Util.url_encode(agent_version)}" %>
             <small class='text-muted'>
               <%= number_with_delimiter count %>
             </small>
