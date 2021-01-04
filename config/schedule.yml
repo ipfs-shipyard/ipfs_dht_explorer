@@ -32,3 +32,8 @@ export_wants:
   cron: "0 0 * * *"
   class: "ExportWantsWorker"
   queue: critical
+
+repo_gc:
+  cron: "0 9 * * *"
+  class: "IpfsRepoGcWorker"
+  queue: critical
