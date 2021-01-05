@@ -131,6 +131,7 @@ class Node < ApplicationRecord
   end
 
   def manual_crawl
+    return if last_crawled > 30.minutes.ago
     if ipfs_connect && json = ipfs_id
       updates = {
         multiaddrs: Array(json['Addresses']).map{|a| a.split('/p2p/').first}.sort,
