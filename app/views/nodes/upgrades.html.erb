@@ -1,0 +1,21 @@
+<h1>
+  Upgrades
+</h1>
+
+<ul>
+  <% @ip4_addresses.each do |ip4_address, count| %>
+    <% unique_versions = @scope.ip4(ip4_address).pluck(:patch_go_ipfs_version).uniq %>
+    <% if unique_versions.length > 1 %>
+      <li>
+        <%= ip4_address %>
+        <ul>
+          <% unique_versions.sort.each do |patch_go_ipfs_version| %>
+            <li>
+              <%= patch_go_ipfs_version %>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  <% end %>
+</ul>

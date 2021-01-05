@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       get :pl
       get :wants
       get :connected
+      get :upgrades
       post :report
     end
   end

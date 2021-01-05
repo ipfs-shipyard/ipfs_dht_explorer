@@ -18,6 +18,7 @@ class Node < ApplicationRecord
   scope :pl, -> { where(pl: true) }
   scope :not_pl, -> { where(pl: false) }
   scope :outdated, -> { where('minor_go_ipfs_version::integer < ?', Node::CURRENT_MINOR_VERSION) }
+  scope :ip4, -> (ip) { where(":ip4_addresses = ANY (ip4_addresses)", ip4_addresses: ip) }
 
   GEO_IP_DIR = ENV['GEO_IP_DIR'] || '/usr/local/var/GeoIP'
 
@@ -195,7 +196,8 @@ class Node < ApplicationRecord
       network:                        geo_details.traits.network,
       autonomous_system_number:       asn_details.autonomous_system_number,
       autonomous_system_organization: asn_details.autonomous_system_organization,
-      domains: domain_names
+      domains: domain_names,
+      ip4_addresses: find_ip4_addresses.map(&:to_s)
       }
   end
 
@@ -226,23 +228,23 @@ class Node < ApplicationRecord
   end
 
   def ip_addresses
-    ip4_addresses + ip6_addresses
+    find_ip4_addresses + ip6_addresses
   end
 
   def public_multi_addrs
     multiaddrs.select do |a|
       begin
         ip = IPAddr.new(a.split('/')[2])
-        !ip.loopback? && !ip.private? && !ip.link_local?
+        !ip.loopback? && !ip.private? && !ip.link_local? && !ip.to_s == "0.0.0.0"
       rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
         false
       end
     end
   end
 
-  def ip4_addresses
+  def find_ip4_addresses
     return [] unless multiaddrs
-    multiaddrs.select{|a| a.split('/')[1] == 'ip4' }.map{|a| IPAddr.new(a.split('/')[2]) }.uniq.select{|a| !a.loopback? && !a.private? && !a.link_local?  }
+    multiaddrs.select{|a| a.split('/')[1] == 'ip4' }.map{|a| IPAddr.new(a.split('/')[2]) }.uniq.select{|a| !a.loopback? && !a.private? && !a.link_local? && a.to_s != "0.0.0.0" }
   end
 
   def ip6_addresses

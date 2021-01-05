@@ -230,6 +230,18 @@ class NodesController < ApplicationController
     @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
+  def upgrades
+    @scope = Node.only_go_ipfs
+    @range = (params[:range].presence || 60).to_i
+    # @scope = scope.where('nodes.updated_at > ?', @range.days.ago)
+    @ip4_addresses = @scope.select(:ip4_addresses).map(&:ip4_addresses).flatten.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.select{|k,v| v > 1}.sort_by{|k,v| -v}
+
+    # theory: a number of people upgrade and get a different peer id (i.e. new node on same ip as old one)
+    # start with inactive nodes to see if they have been upgraded and got new peer ids
+    # ip addresses that have multiple nodes on them of different versions
+    # new versions seen after older versions
+  end
+
   private
 
   def apply_filters(scope)
