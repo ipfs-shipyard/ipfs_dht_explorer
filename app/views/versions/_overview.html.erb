@@ -1,0 +1,10 @@
+<div class="row">
+  <div class="col-md-6">
+    <h3>Countries</h3>
+    <%= pie_chart @scope.map{|a| a.country_name || 'Unknown' }.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}, legend: false %>
+  </div>
+  <div class="col-md-6">
+    <h3>Networks</h3>
+    <%= pie_chart @scope.map{|a| a.autonomous_system_organization || 'Unknown' }.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}, legend: false %>
+  </div>
+</div>

@@ -10,7 +10,9 @@ class VersionsController < ApplicationController
     sort = params[:sort] || 'nodes.wants_count'
     order = params[:order] || 'desc'
 
-    @wants = Want.where(node_id: @scope.pluck(:id)).group(:cid_id).order('count_all desc').count
+    if params[:tab] == 'wants'
+      @wants = Want.where(node_id: @scope.pluck(:id)).group(:cid_id).order('count_all desc').count
+    end
   end
 
   def show_chart

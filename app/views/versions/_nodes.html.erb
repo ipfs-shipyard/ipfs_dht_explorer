@@ -1,0 +1,5 @@
+<h4>Nodes</h4>
+
+<% @scope.order('wants_count desc, sightings desc').limit(30).each do |node| %>
+  <%= render node %>
+<% end %>

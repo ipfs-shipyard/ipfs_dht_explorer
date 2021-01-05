@@ -35,50 +35,40 @@
 </p>
 <% end %>
 
+<!--
 <p>TODO: open source usage</p>
 
 <p>TODO: release date</p>
+-->
 
 <div class="row">
-  <div class="col-md-6">
-    <h3>Countries</h3>
-    <%= pie_chart @scope.map{|a| a.country_name || 'Unknown' }.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}, legend: false %>
-  </div>
-  <div class="col-md-6">
-    <h3>Networks</h3>
-    <%= pie_chart @scope.map{|a| a.autonomous_system_organization || 'Unknown' }.inject(Hash.new(0)) { |h, e| h[e] += 1 ; h }.sort_by{|k,v| -v}, legend: false %>
-  </div>
-</div>
+  <div class="col-md-12">
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <a class="nav-link <%= 'active' if params[:tab].blank? || params[:tab] == 'overview' %>" href="<%= "/versions/#{ERB::Util.url_encode(@version)}?range=#{@range}&tab=" %>">
+          Overview
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link <%= 'active' if params[:tab] == 'nodes' %>" href="<%= "/versions/#{ERB::Util.url_encode(@version)}?range=#{@range}&tab=nodes" %>">
+          Nodes
+          <span class='badge badge-secondary'><%= @scope.count %></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link <%= 'active' if params[:tab] == 'wants' %>" href="<%= "/versions/#{ERB::Util.url_encode(@version)}?range=#{@range}&tab=wants" %>">
+          Wants
+        </a>
+      </li>
+    </ul>
 
-<div class="row">
-  <div class="col-md-6">
-    <h4>Nodes</h4>
-
-    <% @scope.order('wants_count desc, sightings desc').limit(30).each do |node| %>
-      <%= render node %>
-    <% end %>
-
-  </div>
-  <div class="col-md-6">
-    <h4>Wants</h4>
-
-    <% @wants.first(50).each do |cid_id, count| %>
-      <% cid = Cid.find cid_id %>
-
-      <div class='cid mb-2'>
-        <span class='cid'><%= link_to cid.cid, cid_path(cid.cid) %></span>
-        <small class='text-muted'>
-          <%= number_with_delimiter count %> wants
-          <% if cid.content_type.present? %>
-             - <%= cid.content_type %>
-            <% if cid.content_length.present? %>
-              - <%= number_to_human_size cid.content_length %>
-            <% end %>
-          <% elsif cid.last_loaded_at %>
-             - <span title='Last load attempted at <%= cid.last_loaded_at %>'>Unknown type</span>
-          <% end %>
-        </small>
-      </div>
-    <% end %>
+    <%= case params[:tab]
+    when 'nodes'
+      render 'nodes'
+    when 'wants'
+      render 'wants'
+    else
+      render 'overview'
+    end %>
   </div>
 </div>

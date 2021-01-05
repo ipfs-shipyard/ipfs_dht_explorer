@@ -144,7 +144,7 @@
       <% count.first(5).each do |k,v| %>
         <tr>
           <td>
-            <%= k %>
+            <%= link_to k, "/versions/#{ERB::Util.url_encode("go-ipfs/#{k}/")}?range=#{@range}" %>
           </td>
           <td>
             <%= number_with_delimiter v %>
