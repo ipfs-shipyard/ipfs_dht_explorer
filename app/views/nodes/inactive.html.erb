@@ -1,7 +1,12 @@
 <nav class="mb-2 mt-2 pl-0 navbar navbar-expand-lg navbar-light">
   <span class="navbar-brand" >
     <strong><%= @page_title = 'Inactive' %></strong>
-    <small class='text-muted'><%= number_with_delimiter @scope.count %> (<%= (@scope.count.to_f/@original_scope.count*100).round(1) %>%) </small>
+    <small class='text-muted'>
+      <%= number_with_delimiter @scope.count %>
+      <% if @original_scope.count > 0 %>
+        (<%= (@scope.count.to_f/@original_scope.count*100).round(1) %>%)
+      <% end %>
+    </small>
   </span>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
