@@ -230,6 +230,29 @@ class NodesController < ApplicationController
     @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
+  def new
+    @scope = Node.only_go_ipfs
+
+    @scope = apply_filters(@scope)
+    @scope = @scope.where('nodes.created_at > ?', @range.days.ago)
+
+    filter_counts(@scope)
+
+    @graph = {}
+    (Date.today-(@range - 1)..Date.today).map do |d|
+      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:patch_go_ipfs_version).count
+      count.each do |k,v|
+        key = [k, d]
+        @graph[key] = v
+      end
+    end
+
+    sort = params[:sort] || 'nodes.wants_count'
+    order = params[:order] || 'desc'
+
+    @pagy, @nodes = pagy(@scope.order(sort => order))
+  end
+
   private
 
   def apply_filters(scope)
