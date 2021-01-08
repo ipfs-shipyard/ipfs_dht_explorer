@@ -24,12 +24,12 @@ export_nodes:
   queue: critical
 
 export_cids:
-  cron: "0 0 * * 0"
+  cron: "0 1 * * 0"
   class: "ExportCidsWorker"
   queue: critical
 
 export_wants:
-  cron: "0 0 * * *"
+  cron: "0 2 * * *"
   class: "ExportWantsWorker"
   queue: critical
 
