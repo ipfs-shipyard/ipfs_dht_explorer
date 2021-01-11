@@ -39,6 +39,7 @@ gem 'flag-icons-rails'
 gem 'iso_country_codes'
 gem 'chartkick'
 gem 'groupdate'
+gem 'octicons_helper'
 
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'

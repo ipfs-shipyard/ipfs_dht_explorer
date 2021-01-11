@@ -39,9 +39,99 @@
   <%= line_chart @graph %>
 </div>
 
+<div class="row home">
+  <div class="col-md-3">
+    <a href="<%= nodes_path %>">
+      <div class="card shadow-sm mb-3">
+        <div class="card-content">
+          <div class="card-body">
+            <div class="media d-flex">
+              <div class="align-self-center">
+                <%= octicon 'telescope', height: 50 %>
+              </div>
+              <div class="media-body text-right">
+
+                <h3>
+                  <%= number_to_human @scope.count %>
+                </h3>
+                <span>Total Nodes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-3">
+    <a href="<%= new_node_path %>">
+      <div class="card shadow-sm mb-3">
+        <div class="card-content">
+          <div class="card-body">
+            <div class="media d-flex">
+              <div class="align-self-center">
+                <%= octicon 'check-circle', height: 50 %>
+              </div>
+              <div class="media-body text-right">
+
+                <h3>
+                  <%= number_to_human @scope.where('created_at > ?',  @range.days.ago).count %>
+                </h3>
+                <span>New Nodes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="col-md-3">
+    <a href="<%= outdated_nodes_path %>">
+      <div class="card shadow-sm mb-3">
+        <div class="card-content">
+          <div class="card-body">
+            <div class="media d-flex">
+              <div class="align-self-center">
+                <%= octicon 'history', height: 50 %>
+              </div>
+              <div class="media-body text-right">
+
+                <h3>
+                  <%= number_to_human @scope.outdated.count %>
+                </h3>
+                <span>Outdated Nodes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-3">
+    <a href="<%= secio_nodes_path %>">
+      <div class="card shadow-sm mb-3">
+        <div class="card-content">
+          <div class="card-body">
+            <div class="media d-flex">
+              <div class="align-self-center">
+                <%= octicon 'issue-opened', height: 50 %>
+              </div>
+              <div class="media-body text-right">
+
+                <h3>
+                  <%= number_to_human @scope.before_secio.count %>
+                </h3>
+                <span>Secio nodes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-md-4">
-    <h2>Countries</h2>
+    <h3>Countries</h3>
     <% count = @scope.group(:country_name).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
     <% d = Date.today - (@range - 1) %>
     <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:country_name).count.reject{|k,v| k.blank?} %>
@@ -85,7 +175,7 @@
 
   </div>
   <div class="col-md-4">
-    <h2>Minor Versions</h2>
+    <h3>Minor Versions</h3>
     <% count = @scope.group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v}.map{|k,v| ["0.#{k}.X", v]} %>
     <% d = Date.today - (@range - 1) %>
     <% previous_count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:minor_go_ipfs_version).count.reject{|k,v| k.blank?}.transform_keys{|k| "0.#{k}.X"} %>
@@ -129,7 +219,7 @@
     </table>
   </div>
   <div class="col-md-4">
-    <h2>Patch Versions</h2>
+    <h3>Patch Versions</h3>
 
     <% count = @scope.group(:patch_go_ipfs_version).count.reject{|k,v| k.blank?}.sort_by{|k,v| -v} %>
     <% d = Date.today - (@range - 1) %>
