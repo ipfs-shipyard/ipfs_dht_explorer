@@ -1,15 +1,15 @@
 discover_connected_peers:
-  cron: "0 */1 * * *"
+  cron: "0 */4 * * *"
   class: "DiscoverConnectedPeersWorker"
   queue: critical
 
 dial_secio_nodes:
-  cron: "15 */1 * * *"
+  cron: "15 */2 * * *"
   class: "DialSecioNodesWorker"
   queue: critical
 
 dial_incomplete_nodes:
-  cron: "30 */1 * * *"
+  cron: "30 */3 * * *"
   class: "DialIncompleteNodesWorker"
   queue: critical
 
@@ -24,16 +24,16 @@ export_nodes:
   queue: critical
 
 export_cids:
-  cron: "0 1 * * 0"
+  cron: "0 4 * * 0"
   class: "ExportCidsWorker"
   queue: critical
 
 export_wants:
-  cron: "0 2 * * *"
+  cron: "0 8 * * *"
   class: "ExportWantsWorker"
   queue: critical
 
 repo_gc:
-  cron: "0 9 * * *"
+  cron: "0 16 * * *"
   class: "IpfsRepoGcWorker"
   queue: critical
