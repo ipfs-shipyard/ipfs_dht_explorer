@@ -37,3 +37,8 @@ repo_gc:
   cron: "0 16 * * *"
   class: "IpfsRepoGcWorker"
   queue: critical
+
+want_gc:
+  cron: "0 12 * * *"
+  class: "WantGcWorker"
+  queue: critical

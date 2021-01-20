@@ -27,4 +27,8 @@ class Want < ApplicationRecord
     File.delete(path)
     File.delete(archive_path)
   end
+
+  def self.gc
+    Want.where('created_at < ?', 7.days.ago).delete_all
+  end
 end

@@ -99,6 +99,6 @@ namespace :wants do
   end
 
   task cleanup: :environment do
-    Want.where('created_at < ?', 7.days.ago).delete_all
+    Want.gc
   end
 end
