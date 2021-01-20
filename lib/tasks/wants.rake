@@ -97,4 +97,8 @@ namespace :wants do
     path = '/data/ipfs/wants.csv'
     Want.export(path, start_date, end_date)
   end
+
+  task cleanup: :environment do
+    Want.where('created_at < ?', 7.days.ago).delete_all
+  end
 end
