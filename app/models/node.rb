@@ -22,6 +22,10 @@ class Node < ApplicationRecord
   scope :gateway, -> { where(gateway: true) }
   scope :not_gateway, -> { where(gateway: false) }
 
+  scope :brave, -> { where("array_to_string(multiaddrs, '||') ILIKE :port", port: "%#{BRAVE_PORT}%") }
+
+  BRAVE_PORT = 44001
+
   GEO_IP_DIR = ENV['GEO_IP_DIR'] || '/usr/local/var/GeoIP'
 
   GEO_CITY_READER = MaxMind::GeoIP2::Reader.new("#{GEO_IP_DIR}/GeoLite2-City.mmdb")
