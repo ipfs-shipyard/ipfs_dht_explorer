@@ -184,15 +184,9 @@ class NodesController < ApplicationController
     @scope = Node.brave
     @scope = apply_filters(@scope)
     filter_counts(@scope)
-    sort = params[:sort] || 'nodes.id'
+    sort = params[:sort] || 'nodes.updated_at'
     order = params[:order] || 'desc'
-
-    @graph = {}
-    (Date.today-(@range - 1)..Date.today).map do |d|
-      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).count
-      @graph[d] = count
-    end
-
+    
     @pagy, @nodes = pagy(@scope.order(sort => order))
   end
 
