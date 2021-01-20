@@ -5,6 +5,7 @@ namespace :wants do
     peers = Hash.new { |hash, key| hash[key] = [] }
     cids = []
     pl_peer_ids = Node.pl.pluck(:node_id)
+    gateway_peer_ids = Node.gateway.pluck(:node_id)
 
     data_path = '/data/ipfs'
     log_name = 'ipfs.log'
@@ -40,6 +41,7 @@ namespace :wants do
     peers.each do |k,v|
       next if k.blank?
       next if pl_peer_ids.include?(k) # skip PL node wants
+      next if gateway_peer_ids.include?(k) # skip gateway node wants
       node = Node.find_by_node_id(k)
       if node.nil?
         puts "missing node: #{k}"
