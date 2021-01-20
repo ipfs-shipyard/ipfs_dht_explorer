@@ -189,9 +189,8 @@ class NodesController < ApplicationController
 
     @graph = {}
     (Date.today-(@range - 1)..Date.today).map do |d|
-      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:agent_version).count
+      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:patch_go_ipfs_version).count
       count.each do |k,v|
-        next unless v > 25
         key = [k, d]
         @graph[key] = v
       end

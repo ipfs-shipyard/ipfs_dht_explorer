@@ -22,7 +22,7 @@ class Node < ApplicationRecord
   scope :gateway, -> { where(gateway: true) }
   scope :not_gateway, -> { where(gateway: false) }
 
-  scope :brave, -> { where("array_to_string(multiaddrs, '||') ILIKE :port", port: "%#{BRAVE_PORT}%") }
+  scope :brave, -> { only_go_ipfs.where("array_to_string(multiaddrs, '||') ILIKE :port", port: "%#{BRAVE_PORT}%") }
 
   BRAVE_PORT = 44001
 
