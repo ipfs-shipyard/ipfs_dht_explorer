@@ -189,11 +189,8 @@ class NodesController < ApplicationController
 
     @graph = {}
     (Date.today-(@range - 1)..Date.today).map do |d|
-      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).group(:patch_go_ipfs_version).count
-      count.each do |k,v|
-        key = [k, d]
-        @graph[key] = v
-      end
+      count = @scope.where('updated_at >= ?', d).where('created_at <= ?', d).count
+      @graph[d] = count
     end
 
     @pagy, @nodes = pagy(@scope.order(sort => order))
