@@ -22,7 +22,9 @@ class Node < ApplicationRecord
   scope :gateway, -> { where(gateway: true) }
   scope :not_gateway, -> { where(gateway: false) }
 
-  scope :brave, -> { where("minor_go_ipfs_version not in (?) or minor_go_ipfs_version is null", ['4', '5','6']).without_boosters.without_storm.where("array_to_string(multiaddrs, '||') ILIKE :port", port: "%#{BRAVE_PORT}%") }
+  scope :uses_random_port, -> { where(random_port: true) }
+
+  scope :brave, -> { where(random_port: false).where("minor_go_ipfs_version not in (?) or minor_go_ipfs_version is null", ['4', '5','6']).without_boosters.without_storm.where("array_to_string(multiaddrs, '||') ILIKE :port", port: "%#{BRAVE_PORT}%") }
 
   BRAVE_PORT = 44001
 
@@ -203,8 +205,9 @@ class Node < ApplicationRecord
       network:                        geo_details.traits.network,
       autonomous_system_number:       asn_details.autonomous_system_number,
       autonomous_system_organization: asn_details.autonomous_system_organization,
-      domains: domain_names
-      }
+      domains: domain_names,
+      random_port: uses_random_port?
+    }
   end
 
   def update_location_details
@@ -256,6 +259,11 @@ class Node < ApplicationRecord
   def ip6_addresses
     return [] unless multiaddrs
     multiaddrs.select{|a| a.split('/')[1] == 'ip6' }.map{|a| IPAddr.new(a.split('/')[2]) }.uniq.select{|a| !a.loopback? && !a.private? && !a.link_local?  }
+  end
+
+  def ports
+    return [] unless multiaddrs
+    multiaddrs.map{|a| a.split('/')[4] }.uniq.compact.sort
   end
 
   def minor_go_ipfs_version
@@ -400,5 +408,9 @@ class Node < ApplicationRecord
       node = Node.find_or_create_by(node_id: row['peer_id'])
       node.update(pl: true)
     end
+  end
+
+  def uses_random_port?
+    ports.length > 20
   end
 end
