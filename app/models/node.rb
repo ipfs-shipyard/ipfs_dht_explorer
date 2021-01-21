@@ -411,6 +411,6 @@ class Node < ApplicationRecord
   end
 
   def uses_random_port?
-    ports.length > 20
+    ports.length > 5
   end
 end
