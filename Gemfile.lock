@@ -128,7 +128,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ipaddr (1.2.2)
     iso_country_codes (0.7.8)
-    jbuilder (2.10.1)
+    jbuilder (2.11.1)
       activesupport (>= 5.0.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
