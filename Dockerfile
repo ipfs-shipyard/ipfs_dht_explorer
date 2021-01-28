@@ -2,6 +2,7 @@ FROM ruby:2.7.2-alpine
 
 ENV APP_ROOT /usr/src/app
 ENV DATABASE_PORT 5432
+ENV MALLOC_ARENA_MAX 2
 WORKDIR $APP_ROOT
 
 # =============================================
