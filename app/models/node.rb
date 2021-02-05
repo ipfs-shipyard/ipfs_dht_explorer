@@ -120,12 +120,14 @@ class Node < ApplicationRecord
   end
 
   def ipfs_connect
-    addrs = public_multi_addrs.first(10).map{|origin| "#{origin}/p2p/#{node_id}" }
+    addrs = public_multi_addrs.first(3).map{|origin| "#{origin}/p2p/#{node_id}" }
     addrs += ["/p2p/#{node_id}"]
     addrs.each do |addr|
       begin
-        Node.ipfs_client.swarm_connect(addr)
-      rescue Ipfs::Commands::Error => e
+        Timeout::timeout(60) do
+          Node.ipfs_client.swarm_connect(addr)
+        end
+      rescue Timeout::Error, Ipfs::Commands::Error => e
         puts e
       end
     end
